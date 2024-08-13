@@ -1,0 +1,117 @@
+/* Full CSS for the Projects Section */
+.projects-section {
+  background-color: #0a0a0a; /* Black background */
+  padding: 60px 0;
+}
+
+.custom-tabs .nav-link {
+  color: #00ff9d; /* Match the button text color for inactive tabs */
+  background-color: transparent;
+  border: 2px solid transparent;
+  padding: 10px 20px;
+  margin: 0 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-tabs .nav-link.active {
+  border-color: transparent; /* Remove the border around the active tab */
+  background-color: #00ff9d; /* Match the button background color */
+  color: #000; /* Match the button text color */
+  font-weight: bold;
+}
+
+/* Ensure no border line or shadow under the tabs */
+.custom-tabs .nav-tabs,
+.custom-tabs .nav-tabs .nav-link,
+.custom-tabs .nav-tabs .nav-item,
+.custom-tabs .nav-tabs::after,
+.custom-tabs .nav-tabs::before,
+.custom-tabs .nav-item.show .nav-link,
+.custom-tabs .nav-tabs .nav-link.active {
+  border-bottom: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: none !important;
+  text-decoration: none !important;
+}
+
+.custom-tabs .nav-tabs .nav-link {
+  border: none !important; /* Remove any borders on the nav-link */
+  outline: none !important; /* Remove any outline on the nav-link */
+}
+
+.custom-tabs .nav-tabs .nav-link:focus,
+.custom-tabs .nav-tabs .nav-link:hover,
+.custom-tabs .nav-item.show .nav-link,
+.custom-tabs .nav-tabs .nav-link.active {
+  border: none !important; /* Ensure no borders or outlines on active or focused elements */
+  outline: none !important;
+}
+
+.custom-tabs .nav-tabs {
+  border-bottom-width: 0px !important;
+}
+
+/* General reset for unwanted styling */
+* {
+  text-decoration: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.carousel-container {
+  padding-top: 20px;
+}
+
+.custom-card {
+  background-color: #1a1a1a; /* Dark background for cards */
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.custom-card img {
+  border-radius: 10px 10px 0 0;
+  height: 300px; /* Adjust the height of images */
+  object-fit: cover;
+}
+
+.custom-card .card-body {
+  padding: 20px;
+}
+
+.custom-card .card-title {
+  color: #00ff9d; /* Green color for card title */
+  font-size: 1.2rem;
+}
+
+.custom-card .card-text {
+  color: #cfcfcf; /* Lighter text color for descriptions */
+  font-size: 1rem;
+}
+
+.custom-tabs .nav-link:hover {
+  color: #000;
+  background-color: #00ff9d; /* Same color on hover */
+  border-color: #00ff9d;
+}
+
+.tab-pane {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.tab-pane.active {
+  opacity: 1;
+}
+
+.custom-tabs .nav-tabs {
+  border-bottom: none; /* Remove the border line below the tabs */
+}
+
+.custom-tabs .nav-tabs::after {
+  display: none; /* Ensure no border line or shadow under the tabs */
+}
