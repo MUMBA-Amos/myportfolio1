@@ -21,24 +21,25 @@ const CircularCarousel = () => {
       alignItems: "center",
       minHeight: "100vh",
       overflow: "hidden", // Prevent overflow
+      width: "100vw", // Ensure full viewport width
     },
     container: {
       position: "relative",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      height: "400px", // Reduced height to fit within the viewport
-      width: "400px", // Reduced width to fit within the viewport
+      height: "300px", // Reduced height for smaller devices
+      width: "300px", // Reduced width for smaller devices
       backgroundColor: "#0a0a0a",
       borderRadius: "50%",
       overflow: "hidden", // Prevent overflow from the container
     },
     centerCircle: {
       position: "absolute",
-      width: "200px",
-      height: "200px",
-      backgroundColor: "#0a0a0a", // Center black background
-      color: "#00ff9d", // Green text color
+      width: "120px",
+      height: "120px",
+      backgroundColor: "#0a0a0a",
+      color: "#00ff9d",
       fontWeight: "bold",
       display: "flex",
       justifyContent: "center",
@@ -46,6 +47,7 @@ const CircularCarousel = () => {
       textAlign: "center",
       borderRadius: "50%",
       zIndex: 2,
+      fontSize: "0.8rem", // Reduced font size for smaller devices
     },
     iconContainer: (x, y) => ({
       position: "absolute",
@@ -75,19 +77,16 @@ const CircularCarousel = () => {
         <Row className="position-absolute w-100 h-100">
           {technologies.map((tech, index) => {
             const angle = (index / technologies.length) * 2 * Math.PI;
-            const x = 150 * Math.cos(angle) + 200; // Adjust positioning values
-            const y = 150 * Math.sin(angle) + 200; // Adjust positioning values
+            const x = 100 * Math.cos(angle) + 150; // Adjust positioning values for smaller container
+            const y = 100 * Math.sin(angle) + 150; // Adjust positioning values for smaller container
             return (
               <Col key={index} style={styles.iconContainer(x, y)}>
-                <div style={{ fontSize: "1.5rem", color: "inherit" }}>
-                  {" "}
-                  {/* Reduced icon size */}
+                <div style={{ fontSize: "1rem", color: "inherit" }}>
                   {tech.icon}
                 </div>
-                <span style={{ color: "inherit", fontSize: "0.8rem" }}>
+                <span style={{ color: "inherit", fontSize: "0.7rem" }}>
                   {tech.name}
-                </span>{" "}
-                {/* Reduced text size */}
+                </span>
               </Col>
             );
           })}
