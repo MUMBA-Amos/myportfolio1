@@ -3,22 +3,28 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { Tabs, Tab, Card, Container } from "react-bootstrap";
 import "./Projects.css"; // Assuming you have custom styles here
+import Project1Image from "./images/C.png";
+import Project2Image from "./images/Webapp.png";
+import Project3Image from "./images/ai.png";
 
 const projects = [
   {
-    title: "Project 1",
-    description: "A brief description of Project 1.",
-    image: "https://picsum.photos/200/200?random=1",
+    title: "C custom Program",
+    description:
+      "This programmed was designed for serving the purpose of library management. The program is only accessible by the Admin. The admin is responsible for adding a new book to the system, viewing the books in the system, able to remove a book from the system and lastly issue a book to a student then logout. The admin login in credentials are as follows.",
+    image: Project1Image,
   },
   {
-    title: "Project 2",
-    description: "A brief description of Project 2.",
-    image: "https://picsum.photos/200/200?random=2",
+    title: "LeanerZone website",
+    description:
+      "LeanerZone website was a mini self project for a dutch company that was established in 2012, with a sole purpose to teach, enabling people all around the world learn new skills. The courses are taught by experience lectures who will be there for you at all times to assist. We believe quaity teaching ",
+    image: Project2Image,
   },
   {
-    title: "Project 3",
-    description: "A brief description of Project 3.",
-    image: "https://picsum.photos/200/200?random=3",
+    title: "Three-Bottles Problem using search algorthms",
+    description:
+      "The Three-Bottles Problem we're looking at is a good example of this. In this problem, we have three different bottles, each able to hold a different amount of water. Our job was to move the water around between the bottles to reach a certain goal. Rthere are many ways to solve it, and finding the best way isn't always straightforward.I used four main types: Depth-First Search (DFS), Breadth-First Search (BFS), Greedy Best-First Search (GBFS), and A* Search (A*)",
+    image: Project3Image,
   },
   {
     title: "Project 4",
