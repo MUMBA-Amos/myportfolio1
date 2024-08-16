@@ -15,21 +15,23 @@ const technologies = [
 const CircularCarousel = () => {
   const styles = {
     section: {
-      backgroundColor: "#0a0a0a", // Black background for the entire section
+      backgroundColor: "#0a0a0a",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      minHeight: "100vh", // Ensure the section takes up the full height of the viewport
+      minHeight: "100vh",
+      overflow: "hidden", // Prevent overflow
     },
     container: {
       position: "relative",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      height: "500px",
-      width: "500px",
-      backgroundColor: "#0a0a0a", // Black background for the container
+      height: "400px", // Reduced height to fit within the viewport
+      width: "400px", // Reduced width to fit within the viewport
+      backgroundColor: "#0a0a0a",
       borderRadius: "50%",
+      overflow: "hidden", // Prevent overflow from the container
     },
     centerCircle: {
       position: "absolute",
@@ -73,14 +75,19 @@ const CircularCarousel = () => {
         <Row className="position-absolute w-100 h-100">
           {technologies.map((tech, index) => {
             const angle = (index / technologies.length) * 2 * Math.PI;
-            const x = 200 * Math.cos(angle) + 250; // Adjust to center
-            const y = 200 * Math.sin(angle) + 250; // Adjust to center
+            const x = 150 * Math.cos(angle) + 200; // Adjust positioning values
+            const y = 150 * Math.sin(angle) + 200; // Adjust positioning values
             return (
               <Col key={index} style={styles.iconContainer(x, y)}>
-                <div style={{ fontSize: "2rem", color: "inherit" }}>
+                <div style={{ fontSize: "1.5rem", color: "inherit" }}>
+                  {" "}
+                  {/* Reduced icon size */}
                   {tech.icon}
                 </div>
-                <span style={{ color: "inherit" }}>{tech.name}</span>
+                <span style={{ color: "inherit", fontSize: "0.8rem" }}>
+                  {tech.name}
+                </span>{" "}
+                {/* Reduced text size */}
               </Col>
             );
           })}
