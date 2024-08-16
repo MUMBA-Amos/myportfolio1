@@ -26,8 +26,8 @@
 .custom-tabs .nav-tabs,
 .custom-tabs .nav-tabs .nav-link,
 .custom-tabs .nav-tabs .nav-item,
-.custom-tabs .nav-tabs::after,
-.custom-tabs .nav-tabs::before,
+.custom-tabs::after,
+.custom-tabs::before,
 .custom-tabs .nav-item.show .nav-link,
 .custom-tabs .nav-tabs .nav-link.active {
   border-bottom: none !important;
@@ -74,9 +74,16 @@
 }
 
 .custom-card img {
-  border-radius: 10px 10px 0 0;
-  height: 300px; /* Adjust the height of images */
+  width: 100%;
+  height: 420px;
   object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+.custom-card img:hover {
+  transform: scale(1.05); /* Slightly enlarge the image on hover */
+  filter: brightness(1.1); /* Brighten the image on hover */
 }
 
 .custom-card .card-body {
@@ -114,4 +121,24 @@
 
 .custom-tabs .nav-tabs::after {
   display: none; /* Ensure no border line or shadow under the tabs */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .custom-card img {
+    height: 300px; /* Adjust the height for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-card img {
+    height: 250px; /* Adjust the height for mobile devices */
+  }
+}
+
+.custom-card .card-title,
+.custom-card .card-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Ensures the text does not wrap */
 }
