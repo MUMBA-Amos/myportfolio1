@@ -51,7 +51,7 @@ const Header = ({ contactRef }) => {
                 download="Mumba_Amos_Ntambo_CV.pdf"
                 className="btn btn-success"
               >
-                Download CV
+                View CV
               </a>
 
               <div className="social-icons ml-4">
