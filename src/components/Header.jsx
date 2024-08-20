@@ -46,10 +46,13 @@ const Header = ({ contactRef }) => {
             <h1>
               Hello I'm <span className="text-success">Mumba Amos Ntambo</span>
             </h1>
-            <p className="lead">Software Developer</p>
+            <p className="lead">Developer</p><br />
             <p>
-              I excel at crafting elegant digital experiences and am proficient
-              in various programming languages and technologies.
+              Hello Everyone! I love creating and building, and I’m always eager
+              to learn and grow my skills. Explore my work to see the projects
+              I’ve completed and the skills I’ve developed along the way. I’m
+              excited about new challenges and ready to bring fresh ideas to
+              life.
             </p>
             <div className="d-flex align-items-center mt-3 justify-content-center justify-content-md-start">
               <a
