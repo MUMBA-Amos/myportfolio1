@@ -1,7 +1,14 @@
 import React from "react";
 import CountUp from "react-countup";
 import { motion } from "framer-motion";
-import { FaLinkedin, FaFacebook, FaWhatsapp, FaGithub } from "react-icons/fa";
+import {
+  FaPhone,
+  FaLinkedin,
+  FaFacebook,
+  FaWhatsapp,
+  FaGithub,
+} from "react-icons/fa";
+
 import Navbar from "./Navbar";
 import "./Header.css";
 import mumbaImage from "./mumba.png";
@@ -55,6 +62,9 @@ const Header = ({ contactRef }) => {
               </a>
 
               <div className="social-icons ml-4">
+                <a href="+60176307134" className="icon">
+                  <FaPhone />
+                </a>
                 <a
                   href="https://www.linkedin.com/in/mumba-amos-ntambo-54a665214/"
                   className="icon"
