@@ -46,7 +46,11 @@ const Header = ({ contactRef }) => {
               in various programming languages and technologies.
             </p>
             <div className="d-flex align-items-center mt-3 justify-content-center justify-content-md-start">
-              <a href="/cv.pdf" download className="btn btn-success">
+              <a
+                href="/myportfolio1/cv.pdf"
+                download="Mumba_Amos_Ntambo_CV.pdf"
+                className="btn btn-success"
+              >
                 Download CV
               </a>
 
