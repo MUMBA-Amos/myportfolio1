@@ -18,34 +18,13 @@ const ContactMe = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const { name, email, phone, message } = formData;
 
-    fetch("http://localhost:3001/send-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          alert("Thank you for reaching out!");
-          setFormData({
-            name: "",
-            email: "",
-            phone: "",
-            message: "",
-          });
-        } else {
-          alert("Failed to send message. Please try again.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert(
-          "There was an error sending your message. Please try again later."
-        );
-      });
+    // Construct the mailto link
+    const mailtoLink = `mailto:mumbantambo@gmail.com?subject=Contact Form Submission from ${name}&body=Name: ${name}%0AEmail: ${email}%0APhone: ${phone}%0AMessage: ${message}`;
+
+    // Open the mailto link in the default email client
+    window.location.href = mailtoLink;
   };
 
   return (
@@ -55,8 +34,6 @@ const ContactMe = () => {
           Contact Me
         </h2>
         <div style={styles.formWrapper}>
-          {" "}
-          {/* Apply the new style here */}
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="formName">
               <Form.Label style={styles.label}>Name</Form.Label>
@@ -115,8 +92,7 @@ const ContactMe = () => {
               Send Message
             </Button>
           </Form>
-        </div>{" "}
-        {/* End of the formWrapper div */}
+        </div>
       </Container>
     </section>
   );
@@ -156,13 +132,12 @@ const styles = {
     padding: "10px",
     marginBottom: "15px",
   },
-  // Add a new style for the form wrapper
   formWrapper: {
-    backgroundColor: "#1a1a1a", // A slightly lighter background for contrast
-    border: "2px solid #00ff9d", // Border color matching the theme
-    borderRadius: "10px", // Rounded corners
-    padding: "30px", // Padding inside the form wrapper
-    boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.5)", // Subtle shadow for depth
+    backgroundColor: "#1a1a1a",
+    border: "2px solid #00ff9d",
+    borderRadius: "10px",
+    padding: "30px",
+    boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.5)",
   },
 };
 
