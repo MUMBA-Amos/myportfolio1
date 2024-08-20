@@ -10,7 +10,7 @@ const Footer = () => {
       }}
     >
       <div className="container text-center">
-        <p>© 2024 Your Company. All rights reserved.</p>
+        <p>© 2024 My Portfolio. All rights reserved.</p>
       </div>
     </footer>
   );
