@@ -60,7 +60,7 @@ const Header = ({ contactRef }) => {
                 View CV
               </a>
               <div className="social-icons ml-4">
-                <a href="+60176307134" className="icon">
+                <a href="tel:+60176307134" className="icon">
                   <FaPhone />
                 </a>
                 <a
