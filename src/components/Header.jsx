@@ -77,7 +77,7 @@ const Header = ({ contactRef }) => {
         <div className="hero-stats d-flex justify-content-around flex-wrap mt-5">
           <div className="p-2">
             <h2 className="text-success">
-              <CountUp start={0} end={1} duration={2} />
+              <CountUp start={0} end={2.5} duration={2} />
             </h2>
             <p>Years of experience</p>
           </div>
@@ -89,7 +89,7 @@ const Header = ({ contactRef }) => {
           </div>
           <div className="p-2">
             <h2 className="text-success">
-              <CountUp start={0} end={4} duration={2} />
+              <CountUp start={0} end={5} duration={2} />
             </h2>
             <p>Technologies mastered</p>
           </div>
