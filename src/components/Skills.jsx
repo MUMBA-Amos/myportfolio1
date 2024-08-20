@@ -26,9 +26,7 @@ const Skills = () => {
       style={{ backgroundColor: "#0a0a0a" }}
     >
       <div className="container">
-        <h2 className="text-center text-success mb-3">
-          Skills & Technologiies
-        </h2>
+        <h2 className="text-center text-success mb-3">Skills</h2>
         <p className="text-center mb-5">
           With a strong background in web development and design, I have honed a
           diverse set of skills that allow me to craft visually appealing and

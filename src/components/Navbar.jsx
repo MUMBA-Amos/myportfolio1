@@ -1,11 +1,12 @@
 import React from "react";
+import { Link } from "react-scroll"; // Import Link from react-scroll
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min"; // Ensure this is imported
+import "bootstrap/dist/js/bootstrap.bundle.min";
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark ">
-      <a className="navbar-brand" href="#home">
+    <nav className="navbar navbar-expand-lg navbar-dark">
+      <a className="navbar-brand" href="#home" style={{ cursor: "pointer" }}>
         Mumba.
       </a>
       <button
@@ -16,6 +17,7 @@ const Navbar = () => {
         aria-controls="navbarNav"
         aria-expanded="false"
         aria-label="Toggle navigation"
+        style={{ cursor: "pointer" }}
       >
         <span className="navbar-toggler-icon"></span>
       </button>
@@ -25,20 +27,37 @@ const Navbar = () => {
       >
         <ul className="navbar-nav">
           <li className="nav-item">
-            <a className="nav-link" href="#home">
+            <Link
+              className="nav-link"
+              to="home" // ID of the home section
+              smooth={true}
+              duration={500}
+              style={{ cursor: "pointer" }}
+            >
               Home
-            </a>
+            </Link>
           </li>
-
           <li className="nav-item">
-            <a className="nav-link" href="#contact">
+            <Link
+              className="nav-link"
+              to="contactSection" // ID of the contact section
+              smooth={true}
+              duration={500}
+              style={{ cursor: "pointer" }}
+            >
               Contact
-            </a>
+            </Link>
           </li>
         </ul>
-        <a href="#contact" className="btn btn-outline-success ml-lg-3">
+        <Link
+          to="contactSection"
+          className="btn btn-outline-success ml-lg-3"
+          smooth={true}
+          duration={500}
+          style={{ cursor: "pointer" }}
+        >
           Hire me
-        </a>
+        </Link>
       </div>
     </nav>
   );

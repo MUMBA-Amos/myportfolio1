@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import ContactMe from './components/ContactMe';
 import CircularCarousel from "./components/CircularCarousel";
+import GoToTop from "./components/GoToTop";
 
 
 
@@ -31,6 +32,8 @@ function App() {
         </section>
       </main>
       <Footer />
+
+      <GoToTop />
     </div>
   );
 }

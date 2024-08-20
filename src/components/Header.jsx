@@ -2,15 +2,19 @@ import React from "react";
 import CountUp from "react-countup";
 import { motion } from "framer-motion";
 import { FaLinkedin, FaFacebook, FaWhatsapp, FaGithub } from "react-icons/fa";
-import Navbar from "./Navbar"; // Import the Navbar component
-import "./Header.css"; // Custom styles here
-import mumbaImage from "./mumba.png"; // Import the image
+import Navbar from "./Navbar";
+import "./Header.css";
+import mumbaImage from "./mumba.png";
 
-const Header = () => {
+const Header = ({ contactRef }) => {
+  const scrollToContact = () => {
+    contactRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <header className="header d-flex align-items-center">
       <div className="container">
-        <Navbar /> {/* Use the Navbar component */}
+        <Navbar />
         <div className="hero-content row align-items-center text-white mt-5">
           <div className="hero-image col-lg-4 col-md-5 col-sm-12 text-center mt-4 mt-md-0 order-1 order-md-2">
             <div style={styles.photoContainer}>
@@ -42,9 +46,10 @@ const Header = () => {
               in various programming languages and technologies.
             </p>
             <div className="d-flex align-items-center mt-3 justify-content-center justify-content-md-start">
-              <a href="#contact" className="btn btn-success">
+              <a href="/cv.pdf" download className="btn btn-success">
                 Download CV
               </a>
+
               <div className="social-icons ml-4">
                 <a
                   href="https://www.linkedin.com/in/mumba-amos-ntambo-54a665214/"
@@ -97,34 +102,7 @@ const Header = () => {
 };
 
 const styles = {
-  photoContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "20px",
-  },
-  photo: {
-    position: "relative",
-    width: "400px", // Size of the image
-    height: "400px",
-  },
-  profileImage: {
-    borderRadius: "50%",
-    width: "100%",
-    height: "100%",
-    zIndex: 2,
-  },
-  spinningBorder: {
-    position: "absolute",
-    top: "-15px", // Adjust to remove space
-    left: "-25px",
-    width: "430px", // Adjust to perfectly fit around the image
-    height: "430px",
-    borderRadius: "50%",
-    border: "5px solid red", // Temporary solid red border for testing visibility
-    boxSizing: "border-box",
-    zIndex: 1, // Positioned behind the image
-  },
+  // Styles for the Header component
 };
 
 export default Header;

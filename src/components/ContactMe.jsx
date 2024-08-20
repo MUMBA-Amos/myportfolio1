@@ -28,7 +28,7 @@ const ContactMe = () => {
   };
 
   return (
-    <section style={styles.contactSection}>
+    <section id="contactSection" style={styles.contactSection}>
       <Container style={styles.container}>
         <h2 style={styles.heading} className="text-center mb-4">
           Contact Me
