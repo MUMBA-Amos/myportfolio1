@@ -102,7 +102,7 @@ const Header = ({ contactRef }) => {
             <h2 className="text-success">
               <CountUp start={0} end={5} duration={2} />
             </h2>
-            <p>Familiar Technologies</p>
+            <p>Technologies Used</p>
           </div>
           <div className="p-2">
             <h2 className="text-success">

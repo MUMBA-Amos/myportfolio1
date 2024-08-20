@@ -39,7 +39,7 @@ const TechnologiesSection = () => {
           className="text-center"
           style={{ color: "#00ff9d", marginBottom: "40px" }} // Apply the color scheme here
         >
-          Technologies I Know
+          Familiar Technologies
         </h2>
         <Row>
           {technologies.map((tech, index) => (
