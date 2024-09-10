@@ -4,10 +4,10 @@ import { useInView } from "react-intersection-observer";
 
 const skills = [
   { name: "PHP", level: 90 },
-  { name: "BOOTRAP", level: 75 },
+  { name: "BOOTSTRAP", level: 75 },
   { name: "HTML5", level: 85 },
   { name: "SQL", level: 80 },
-  { name: "PHYTHON", level: 60 },
+  { name: "PYTHON", level: 60 },
   { name: "C#", level: 30 },
   { name: "C+", level: 30 },
   { name: "C", level: 30 },
