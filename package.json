@@ -2,7 +2,6 @@
   "name": "portfolio",
   "version": "0.1.0",
   "private": false,
-  "homepage": "https://mumba-amos.github.io/myportfolio1/",
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@react-three/fiber": "^8.18.0",
@@ -37,7 +36,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
+    "predeploy": "PUBLIC_URL=/myportfolio1 npm run build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {

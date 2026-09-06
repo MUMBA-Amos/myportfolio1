@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import Header from './components/Header';
 import Projects from './components/Projects';
-import Contact from './components/ContactMe';
 import Footer from './components/Footer';
 import Skills from "./components/Skills";
 import Experience from "./components/Experience";
