@@ -91,6 +91,13 @@ const Skills = () => {
           start: "top top",
           end: () => "+=" + frames.length * SKILLS_FRAME_SCROLL,
           pin: true,
+          // Pinned by transform, not position:fixed. A fixed element's
+          // percentage width resolves against the unzoomed viewport and is
+          // then scaled by the root zoom again, so the section renders at
+          // 75% of the window. Transform-pinned it stays in normal flow and
+          // measures against its pin-spacer, which is already in the zoomed
+          // coordinate space.
+          pinType: "transform",
           scrub: 0.5,
           invalidateOnRefresh: true,
           // Pins change page height; higher priority refreshes earlier, so

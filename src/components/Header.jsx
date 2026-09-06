@@ -167,6 +167,13 @@ const Header = () => {
           start: "bottom bottom",
           end: () => "+=" + (window.innerHeight + WIPE),
           pin: true,
+          // Pinned by transform, not position:fixed. A fixed element's
+          // percentage width resolves against the unzoomed viewport and is
+          // then scaled by the root zoom again, so the section renders at
+          // 75% of the window. Transform-pinned it stays in normal flow and
+          // measures against its pin-spacer, which is already in the zoomed
+          // coordinate space.
+          pinType: "transform",
           // Measured on every refresh, since it is a screen height
           invalidateOnRefresh: true,
           // No spacer: this is what lets the next section come up behind the
@@ -232,6 +239,13 @@ const Header = () => {
           start: "top top",
           end: "+=" + WIPE,
           pin: true,
+          // Pinned by transform, not position:fixed. A fixed element's
+          // percentage width resolves against the unzoomed viewport and is
+          // then scaled by the root zoom again, so the section renders at
+          // 75% of the window. Transform-pinned it stays in normal flow and
+          // measures against its pin-spacer, which is already in the zoomed
+          // coordinate space.
+          pinType: "transform",
           invalidateOnRefresh: true,
           // Below the hero's pin, above the ones further down the page
           refreshPriority: 4,

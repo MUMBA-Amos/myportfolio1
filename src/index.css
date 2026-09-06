@@ -47,8 +47,39 @@
   --frame-inset: 16px;
 
   /* One screenful, in one place: the sections that mean "as tall as the
-     screen" measure against this rather than repeating the pair below. */
-  --screen: 100vh;
+     screen" measure against this rather than repeating the pair below.
+     Divided by the zoom: vh is not zoom-aware, so inside the zoomed root a
+     plain 100vh renders at 100vh * --page-zoom and every full-height
+     section would come up a quarter short of the window. */
+  --screen: calc(100vh / var(--page-zoom));
+}
+
+/* The page loads drawn at three-quarter size, so it reads the way it does
+   at 75% browser zoom without the visitor setting anything.
+
+   `zoom` rather than `transform: scale()`: zoom re-runs layout at the new
+   size, so position:fixed, position:sticky and the document's scroll
+   height all stay truthful. A scale() paints smaller while all three keep
+   measuring the old box, which on a page driven entirely by ScrollTrigger
+   puts every trigger at the wrong scroll position. */
+:root {
+  --page-zoom: 0.75;
+  zoom: var(--page-zoom);
+}
+
+/* ScrollTrigger pins by writing an inline pixel width it measured with
+   getBoundingClientRect, which reports zoom-scaled pixels; written back as
+   CSS pixels inside the zoomed root the zoom lands twice. Every pinned
+   section here spans the full width, so say so and let the inline value
+   lose. This works because the pins are transform-pinned (see pinType in
+   Header.jsx and Skills.jsx): the sections stay in normal flow, so the
+   percentage resolves against the pin-spacer, which is already in the
+   zoomed coordinate space. Were they position:fixed, it would resolve
+   against the unzoomed viewport and land back at 75%. */
+.header,
+.skills-section,
+.pin-spacer {
+  width: 100% !important;
 }
 
 
@@ -57,7 +88,7 @@
    browser chrome that comes and goes, which vh does not. */
 @supports (height: 100svh) {
   :root {
-    --screen: 100svh;
+    --screen: calc(100svh / var(--page-zoom));
   }
 }
 
