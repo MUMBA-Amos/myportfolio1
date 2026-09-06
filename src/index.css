@@ -67,6 +67,18 @@
   zoom: var(--page-zoom);
 }
 
+/* Not on phones. There the layout is already drawn for the device width
+   and the browser's own viewport scaling fits it to the screen; a second
+   scale on top renders body copy at an effective 12px and hands the page a
+   520px viewport it was never designed for. Setting the variable rather
+   than the property keeps --screen in step, and the query is stable: with
+   the zoom off, the width it matched on is the width it goes on matching. */
+@media (max-width: 767px) {
+  :root {
+    --page-zoom: 1;
+  }
+}
+
 /* ScrollTrigger pins by writing an inline pixel width it measured with
    getBoundingClientRect, which reports zoom-scaled pixels; written back as
    CSS pixels inside the zoomed root the zoom lands twice. Every pinned
