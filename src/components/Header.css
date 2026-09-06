@@ -831,3 +831,19 @@
     transform: translate(-100px, -100px);
   }
 }
+
+/* ── Phones: no turbulence ─────────────────────────────────────────
+   The torn and chipped edges are feTurbulence + feDisplacementMap, the
+   most expensive filter pair SVG has, on sheets that translate as the
+   page scrolls — the whole filtered surface is re-rasterised on every
+   frame of the travel. Dropping the filters keeps each sheet's colour,
+   tilt and shadow and costs only the ragged edge. */
+@media (max-width: 767px) {
+  .newspaper::before {
+    filter: drop-shadow(5px 6px 0 rgba(27, 30, 12, 0.45));
+  }
+
+  .note::before {
+    filter: drop-shadow(3px 5px 10px rgba(27, 30, 12, 0.28));
+  }
+}
