@@ -1,13 +1,11 @@
 /* Fixed site navigation, on the same paper stock as the page. */
 .site-nav {
   --nav-font: var(--grotesk);
-  --squiggle-ink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0,6 C8,2 16,9 26,5 C36,1 44,8 54,5 C64,2 72,9 82,5 C90,2 96,6 100,4' fill='none' stroke='%231b1e0c' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E");
 
   /* Default state sits over the light hero, so the nav inks dark */
   --nav-ink: #1b1e0c;
   --nav-accent: #1b1e0c;
   --nav-contrast: var(--hero-bg);
-  --nav-squiggle: var(--squiggle-ink);
   position: fixed;
   top: 0;
   right: 0;
@@ -151,29 +149,9 @@
   transform: translateY(-2px);
 }
 
-/* Hand-drawn squiggle that draws itself in from the left */
-.site-nav__link::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: -9px;
-  left: 0;
-  height: 11px;
-  background-image: var(--nav-squiggle);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  opacity: 0;
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.4s ease, opacity 0.2s ease;
-}
-
-.site-nav__link:hover::after,
-.site-nav__link:focus-visible::after,
-.site-nav__link.is-active::after {
-  opacity: 1;
-  clip-path: inset(0 0 0 0);
-}
-
+/* The active link is marked by its ink and its weight of colour alone.
+   There used to be a hand-drawn squiggle underlining it, drawn in from the
+   left on hover. */
 .site-nav__link.is-active {
   color: var(--nav-accent);
   opacity: 1;
@@ -341,8 +319,7 @@
   }
 
   .site-nav__link {
-    /* Inline, so the squiggle underneath is as wide as the word and not as
-       wide as the panel. */
+    /* Inline so the row is only as wide as the word it holds */
     display: inline-block;
     padding: 0.85rem 0;
     font-size: 0.85rem;
@@ -366,15 +343,10 @@
 /* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .site-nav,
-  .site-nav__link::after,
   .site-nav__bar,
   .site-nav__menu,
   .site-nav__cta {
     transition: none;
-  }
-
-  .site-nav__link::after {
-    clip-path: none;
   }
 
   .site-nav__link:hover,
