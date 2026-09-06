@@ -265,7 +265,13 @@ const ScrollPen = () => {
       {drawPen && (
       <Canvas
         camera={{ position: [0, 0, 6], fov: 42 }}
-        dpr={[1, 2]}
+        /* The pen is a faint guide at 0.3 opacity, not a subject. At dpr 2 a
+           Retina screen renders four times the pixels of the area it covers,
+           every frame, and antialiasing smooths edges nobody can resolve
+           through that opacity — both were paid for in scroll smoothness and
+           neither is visible. */
+        dpr={[1, 1.25]}
+        gl={{ antialias: false }}
         style={{ pointerEvents: "none" }}
       >
         <ambientLight intensity={1.1} />
