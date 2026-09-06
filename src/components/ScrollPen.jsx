@@ -70,12 +70,9 @@ const ScrollPen = () => {
   // the only owner of the Skills cover that fades that section into
   // Technologies, and unmounting would take the transition with it. The
   // wrapper stays, empty, so the effect below still has its element.
-  const [drawPen, setDrawPen] = useState(() => {
-    // TEMPORARY: ?perf=nopen / ?perf=plain — see index.js
-    const off = document.documentElement.classList;
-    if (off.contains("perf-nopen") || off.contains("perf-plain")) return false;
-    return window.matchMedia(PEN_QUERY).matches;
-  });
+  const [drawPen, setDrawPen] = useState(
+    () => window.matchMedia(PEN_QUERY).matches
+  );
 
   useEffect(() => {
     const query = window.matchMedia(PEN_QUERY);
