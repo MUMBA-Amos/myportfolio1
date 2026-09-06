@@ -360,7 +360,7 @@ const Header = () => {
                     <feTurbulence
                       type="fractalNoise"
                       baseFrequency="0.018 0.055"
-                      numOctaves="4"
+                      numOctaves="2"
                       seed="7"
                       result="noise"
                     />
@@ -451,7 +451,7 @@ const Header = () => {
                     <feTurbulence
                       type="fractalNoise"
                       baseFrequency="0.05 0.045"
-                      numOctaves="3"
+                      numOctaves="2"
                       seed="3"
                       result="noise"
                     />

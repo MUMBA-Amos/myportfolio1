@@ -90,7 +90,7 @@ const Experience = () => {
               <feTurbulence
                 type="fractalNoise"
                 baseFrequency="0.02 0.05"
-                numOctaves="4"
+                numOctaves="2"
                 seed="11"
                 result="noise"
               />
