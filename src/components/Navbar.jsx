@@ -169,11 +169,20 @@ const Navbar = () => {
 
   const close = () => setOpen(false);
 
-  // Anchors stay real links; Lenis handles the travel
-  const go = (id) => (event) => {
-    event.preventDefault();
-    scrollToSection(id);
+  // These are real anchors, and the browser's own jump to them is the
+  // floor: it needs no JavaScript and cannot be broken by it. preventDefault
+  // used to cancel that before handing the travel to Lenis, so when the
+  // Lenis scroll did nothing the reader went nowhere at all.
+  //
+  // Now the default stands. scrollToSection still runs and upgrades the
+  // jump to a smooth travel wherever Lenis is cooperating; where it is not,
+  // the browser has already done the part that matters. The landing sits
+  // clear of the fixed bar via scroll-margin-top in index.css rather than
+  // the offset the script used to apply.
+  const go = (id) => () => {
+    setScrollLock(false);
     close();
+    scrollToSection(id);
   };
 
   return (
