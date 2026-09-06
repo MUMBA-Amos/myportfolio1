@@ -67,13 +67,35 @@ const Experience = () => {
         return;
       }
 
-      gsap.from(".xp-row", {
-        y: 26,
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.out",
-        stagger: 0.12,
-        scrollTrigger: { trigger: rootRef.current, start: "top 72%" },
+      // Each card triggers off itself, not off the section.
+      //
+      // One trigger on the section fired all three at once — staggered, but
+      // all while the section's top was still near the fold. The lower two
+      // finished animating well below the screen, so by the time they were
+      // scrolled to they had already arrived and nothing appeared to
+      // happen. Per-card, each one fades in as it comes up.
+      //
+      // once: the card stays put after it has arrived. Scrolling back up
+      // cannot take it away again, and there is no state left that could
+      // strand it hidden.
+      //
+      // opacity rather than autoAlpha, which would also set
+      // visibility: hidden and keep the card out of find-in-page and the
+      // accessibility tree until it had been reached.
+      gsap.utils.toArray(".xp-row").forEach((row) => {
+        gsap.from(row, {
+          y: 26,
+          opacity: 0,
+          duration: 0.55,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: row,
+            // Well inside the viewport, so the card is already on screen
+            // when it starts rather than arriving late
+            start: "top 85%",
+            once: true,
+          },
+        });
       });
     },
     { scope: rootRef }
