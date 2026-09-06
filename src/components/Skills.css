@@ -273,3 +273,40 @@
   margin: 0 0.5rem;
   color: var(--accent);
 }
+
+/* ── Phones ────────────────────────────────────────────────────────
+   Not pinned here — see the matchMedia in Skills.jsx. Four groups of real
+   text will not fit one phone screen, and shrinking the type far enough
+   to make them would have made them unreadable, so the section is as tall
+   as its content and the frames sit one after another in normal flow
+   rather than stacked on top of each other. Nothing is cut. */
+@media (max-width: 767px) {
+  .skills-section {
+    min-height: 0;
+    /* Top still clears the fixed navbar */
+    padding: 88px 0 56px;
+  }
+
+  .skills-layout {
+    gap: 1.5rem;
+  }
+
+  /* Both were sized to hold the tallest frame while they overlapped */
+  .skills-panel,
+  .skills-groups {
+    min-height: 0;
+  }
+
+  /* Out of the stack and back into the flow */
+  .skills-group {
+    position: static;
+    inset: auto;
+  }
+
+  /* They are a list now, so they need ruling apart */
+  .skills-group + .skills-group {
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--rule);
+  }
+}

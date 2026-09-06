@@ -80,6 +80,16 @@ const Skills = () => {
       const frames = gsap.utils.toArray(".skills-group");
       if (!frames.length) return;
 
+      // Only where a frame fits a screenful. A phone cannot hold one of
+      // these groups in the height a pin gives it, so below 768px the
+      // section is not pinned and the frames stack and scroll in normal
+      // flow instead (see the phone block in Skills.css). The hide below
+      // has to sit inside the query with the timeline that undoes it, or
+      // the frames would be set to autoAlpha 0 on a phone and nothing
+      // would ever bring them back.
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 768px)", () => {
       // A slideshow: each scroll step swaps one frame for the next, rather
       // than stacking them up. The pin holds the section while you step
       // through, then releases to the next section.
@@ -114,6 +124,7 @@ const Skills = () => {
             at + hold - 0.5
           );
         }
+      });
       });
     },
     { scope: rootRef }
