@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Canvas, useLoader, useFrame } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as THREE from "three";
@@ -55,10 +55,31 @@ const Pen = ({ spin }) => {
   );
 };
 
+// The width the 3D pen is worth drawing at. Below it the scene costs more
+// than it gives: a continuous render loop at up to 2x pixel density is a
+// real share of a phone's frame budget, and it is competing with the
+// scroll animations, so the whole page goes rough rather than just the pen.
+const PEN_QUERY = "(min-width: 768px)";
+
 const ScrollPen = () => {
   // Mutable so the render loop can read it without re-rendering React
   const spin = useRef({ ry: 0, rz: 0.35, x: 2.6, y: 1.7, s: 1 });
   const rootRef = useRef(null);
+
+  // Only the canvas is dropped on a phone, not the component: this is also
+  // the only owner of the Skills cover that fades that section into
+  // Technologies, and unmounting would take the transition with it. The
+  // wrapper stays, empty, so the effect below still has its element.
+  const [drawPen, setDrawPen] = useState(
+    () => window.matchMedia(PEN_QUERY).matches
+  );
+
+  useEffect(() => {
+    const query = window.matchMedia(PEN_QUERY);
+    const onChange = (e) => setDrawPen(e.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
 
   useLayoutEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -241,6 +262,7 @@ const ScrollPen = () => {
           wrapper: the result is a full-viewport canvas over the page that
           swallows every click. The style prop is merged into that container,
           so this is what actually turns it off. */}
+      {drawPen && (
       <Canvas
         camera={{ position: [0, 0, 6], fov: 42 }}
         dpr={[1, 2]}
@@ -253,6 +275,7 @@ const ScrollPen = () => {
           <Pen spin={spin} />
         </React.Suspense>
       </Canvas>
+      )}
     </div>
   );
 };
