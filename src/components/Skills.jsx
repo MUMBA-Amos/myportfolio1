@@ -154,7 +154,7 @@ const Skills = () => {
                 <feTurbulence
                   type="fractalNoise"
                   baseFrequency="0.03 0.05"
-                  numOctaves="3"
+                  numOctaves="2"
                   seed="11"
                   result="noise"
                 />
