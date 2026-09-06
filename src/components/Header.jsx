@@ -190,8 +190,27 @@ const Header = () => {
           onRefresh: markCut,
         });
 
-        // The fold runs over the first stretch of the hold. Only --fold is
-        // animated: the crease and the turned-back corner are both drawn
+        // The crease's full size, measured off each sheet so it keeps its
+        // 45 degrees whatever the viewport does to the layout. Set as a
+        // plain property rather than animated: width and height are layout,
+        // and scrubbing them relaid out both sheets and repainted their
+        // gradients on every frame. The scrub below moves only the scale.
+        const sizeFolds = () => {
+          sheets.forEach(({ el, reach }) => {
+            const node = document.querySelector(el);
+            if (!node) return;
+            const box = node.getBoundingClientRect();
+            node.style.setProperty(
+              "--fold-base",
+              Math.min(box.width, box.height) * reach + "px"
+            );
+          });
+        };
+
+        sizeFolds();
+
+        // The fold runs over the first stretch of the hold. Only the scale
+        // is animated: the crease and the turned-back corner are both drawn
         // from it in CSS, so they cannot drift apart.
         const fold = gsap.timeline({
           scrollTrigger: {
@@ -201,24 +220,16 @@ const Header = () => {
             scrub: 0.6,
             invalidateOnRefresh: true,
             refreshPriority: 5,
+            // Re-measured before positions are worked out, so a resize
+            // rebuilds the crease at the sheet's new size
+            onRefreshInit: sizeFolds,
           },
         });
 
-        sheets.forEach(({ el, reach }, i) => {
+        sheets.forEach(({ el }, i) => {
           fold.to(
             el,
-            {
-              // Measured off the sheet, so the crease keeps its 45 degrees
-              // whatever the viewport does to the layout
-              "--fold": () => {
-                const node = document.querySelector(el);
-                if (!node) return "0px";
-                const box = node.getBoundingClientRect();
-                return Math.min(box.width, box.height) * reach + "px";
-              },
-              ease: "none",
-              duration: 1,
-            },
+            { "--fold-scale": 1, ease: "none", duration: 1 },
             // Slight offset so the two sheets do not move as one slab
             i * 0.12
           );
