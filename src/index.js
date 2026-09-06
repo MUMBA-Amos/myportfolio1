@@ -12,6 +12,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 
+// TEMPORARY, for isolating a scroll performance problem. ?perf=nopen turns
+// off the WebGL pen, ?perf=nofilter turns off the torn-edge SVG filters,
+// ?perf=plain turns off both. Stamped on <html> before React mounts so the
+// very first paint already reflects it. Remove once the culprit is known.
+const perf = new URLSearchParams(window.location.search).get("perf");
+if (perf) document.documentElement.classList.add("perf-" + perf);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
