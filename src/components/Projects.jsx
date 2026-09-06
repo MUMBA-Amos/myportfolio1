@@ -79,16 +79,19 @@ const Projects = () => {
         return;
       }
 
-      // opacity rather than autoAlpha, which also sets visibility: hidden
-      // and would keep every project out of find-in-page and out of the
-      // accessibility tree until it had been scrolled to.
-      gsap.from(".work-card, .work-row", {
-        y: 28,
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.out",
-        stagger: 0.1,
-        scrollTrigger: { trigger: rootRef.current, start: "top 72%" },
+      // Same shape as Experience: each card off its own trigger, so the
+      // ones further down arrive as they are reached rather than finishing
+      // off-screen. `once` leaves them put afterwards, and opacity rather
+      // than autoAlpha keeps them in find-in-page and the accessibility
+      // tree the whole time.
+      gsap.utils.toArray(".work-card, .work-row").forEach((card) => {
+        gsap.from(card, {
+          y: 28,
+          opacity: 0,
+          duration: 0.55,
+          ease: "power2.out",
+          scrollTrigger: { trigger: card, start: "top 85%", once: true },
+        });
       });
     },
     { scope: rootRef }
