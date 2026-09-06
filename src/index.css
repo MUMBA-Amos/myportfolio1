@@ -104,6 +104,18 @@ code {
 }
 
 
+/* Anchor targets stop below the fixed navbar rather than under it. This is
+   what gives the browser's own jump to a #section the same offset the nav
+   script applies, so both routes land in the same place. */
+[id="home"],
+[id="experience"],
+[id="skills"],
+[id="technologies"],
+[id="projects"],
+[id="contactSection"] {
+  scroll-margin-top: var(--site-nav-height, 72px);
+}
+
 /* ── Sticky stack: Technologies, then Projects sliding up over it ──
    Both panels share this containing block, which is what lets the first one
    stay stuck while the second travels over it. The dwell between them is
