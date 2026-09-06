@@ -176,8 +176,11 @@
    collapses to nothing instead of leaving a nub in the corner. */
 .newspaper,
 .note {
-  --fold: 0px;
-  --over: calc(var(--fold) * 0.07);
+  /* Set once per sheet from JS and re-set on refresh, never animated: the
+     scrub moves --fold-scale alone. */
+  --fold-base: 0px;
+  --fold-scale: 0;
+  --over: calc(var(--fold-base) * 0.07);
 }
 
 .paper-fold {
@@ -186,8 +189,17 @@
   right: calc((var(--tear) + var(--over)) * -1);
   bottom: calc((var(--tear) + var(--over)) * -1);
   z-index: 2;
-  width: calc(var(--fold) + var(--over));
-  height: calc(var(--fold) + var(--over));
+  /* Drawn at full size and scaled down to nothing, rather than grown from
+     nothing. Width and height are layout, and --fold drove them plus the
+     two offsets above, so the crease used to force a relayout and a
+     gradient repaint on both sheets every frame of the scrub. A scale is
+     composited, and from the bottom-right corner it grows exactly the way
+     the box used to. At full fold the geometry is identical; at rest the
+     scale collapses it completely, which is what --over used to be for. */
+  width: calc(var(--fold-base) + var(--over));
+  height: calc(var(--fold-base) + var(--over));
+  transform: scale(var(--fold-scale, 0));
+  transform-origin: 100% 100%;
   background-image: linear-gradient(
     to bottom right,
     /* Flap: lit at the tip, shading into the crease. Opaque, so the text
