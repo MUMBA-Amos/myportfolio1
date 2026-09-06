@@ -97,23 +97,27 @@
 .tech-track {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  /* Ruled off top and bottom, so the block reads as one sheet the way the
-     strip did */
+  /* The container draws only the two outer edges the cells cannot: the top
+     of the first row and the left of the first column. Everything else is
+     drawn by the cells below. A border-bottom here would run the full width
+     under a last row that rarely fills it — ten cells over four columns is
+     4, 4, 2 — leaving a rule under two empty slots. */
   border-top: 1px solid var(--tech-rule);
-  border-bottom: 1px solid var(--tech-rule);
+  border-left: 1px solid var(--tech-rule);
 }
 
-/* Ruled between, the way the navbar cells and the stats grid are. Drawn on
-   the cell's own two leading edges rather than as gaps, so the rules meet
-   at the corners however many columns the width gives us. */
+/* Each cell closes itself on the right and underneath. Paired with the two
+   edges above, every cell is boxed, no line is drawn twice, and a short
+   last row simply stops rather than trailing a rule across the gap —
+   whatever number of columns the width gives us. */
 .tech-cell {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.55rem;
   padding: 2rem 1.75rem 2.2rem;
-  border-left: 1px solid var(--tech-rule);
-  border-top: 1px solid var(--tech-rule);
+  border-right: 1px solid var(--tech-rule);
+  border-bottom: 1px solid var(--tech-rule);
 }
 
 .tech-cell__index {
