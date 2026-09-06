@@ -5,7 +5,7 @@ const ViewCV = () => {
     <div style={styles.container}>
       <h2 style={styles.heading}>My CV</h2>
       <iframe
-        src="/cv.pdf"
+        src={`${process.env.PUBLIC_URL}/cv.pdf`}
         style={styles.iframe}
         title="Mumba Amos Ntambo CV"
       ></iframe>

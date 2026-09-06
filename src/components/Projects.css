@@ -1,144 +1,251 @@
-/* Full CSS for the Projects Section */
-.projects-section {
-  background-color: #0a0a0a; /* Black background */
-  padding: 60px 0;
+/* Selected work: back on paper after the graphite Technologies section, in
+   the same ruled language as Experience. */
+.work {
+  /* Above the sticky Technologies panel, so it rides over it rather than
+     disappearing behind it: a positioned element paints above a static one,
+     and the sticky panel is positioned. Above the pen as well, which travels
+     across the page on a layer of its own. */
+  position: relative;
+  z-index: 4;
+
+  --ink: var(--hero-ink);
+  --ink-muted: var(--hero-ink-muted);
+  --rule: var(--hero-ink-soft);
+
+  padding: 5.5rem 0 6rem;
+  background-color: var(--hero-bg);
+  background-image: var(--paper-grain);
+  background-repeat: repeat;
+  background-size: var(--paper-grain-size) var(--paper-grain-size);
+  color: var(--ink);
 }
 
-.custom-tabs .nav-link {
-  color: #00ff9d; /* Match the button text color for inactive tabs */
-  background-color: transparent;
-  border: 2px solid transparent;
-  padding: 10px 20px;
-  margin: 0 10px;
-  border-radius: 5px;
-  font-weight: bold;
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* Above the ruled guide lines drawn behind the section */
+.work > .container {
+  position: relative;
+  z-index: 1;
 }
 
-.custom-tabs .nav-link.active {
-  border-color: transparent; /* Remove the border around the active tab */
-  background-color: #00ff9d; /* Match the button background color */
-  color: #000; /* Match the button text color */
-  font-weight: bold;
+/* Hairline across the top, with ruler ticks hanging under it */
+.work::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 6px;
+  background-image:
+    linear-gradient(var(--rule), var(--rule)),
+    repeating-linear-gradient(
+      to right,
+      rgba(27, 30, 12, 0.34) 0 1px,
+      transparent 1px 12px
+    );
+  background-size: 100% 1px, 100% 5px;
+  background-position: left top, left top;
+  background-repeat: no-repeat;
 }
 
-/* Ensure no border line or shadow under the tabs */
-.custom-tabs .nav-tabs,
-.custom-tabs .nav-tabs .nav-link,
-.custom-tabs .nav-tabs .nav-item,
-.custom-tabs::after,
-.custom-tabs::before,
-.custom-tabs .nav-item.show .nav-link,
-.custom-tabs .nav-tabs .nav-link.active {
-  border-bottom: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: none !important;
-  text-decoration: none !important;
+.work__head {
+  margin-bottom: 0.9rem;
 }
 
-.custom-tabs .nav-tabs .nav-link {
-  border: none !important; /* Remove any borders on the nav-link */
-  outline: none !important; /* Remove any outline on the nav-link */
+.work__kicker {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
 }
 
-.custom-tabs .nav-tabs .nav-link:focus,
-.custom-tabs .nav-tabs .nav-link:hover,
-.custom-tabs .nav-item.show .nav-link,
-.custom-tabs .nav-tabs .nav-link.active {
-  border: none !important; /* Ensure no borders or outlines on active or focused elements */
-  outline: none !important;
+.work__title {
+  margin: 0;
+  font-family: var(--display-serif);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
-.custom-tabs .nav-tabs {
-  border-bottom-width: 0px !important;
-}
-
-/* General reset for unwanted styling */
-* {
-  text-decoration: none !important;
-  border: 0 !important;
-  outline: 0 !important;
-  box-shadow: none !important;
-}
-
-.carousel-container {
-  padding-top: 20px;
-}
-
-.custom-card {
-  background-color: #1a1a1a; /* Dark background for cards */
-  border: none;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.custom-card img {
-  width: 100%;
-  height: 420px;
-  object-fit: cover;
-  border-radius: 10px;
-  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
-}
-
-.custom-card img:hover {
-  transform: scale(1.05); /* Slightly enlarge the image on hover */
-  filter: brightness(1.1); /* Brighten the image on hover */
-}
-
-.custom-card .card-body {
-  padding: 20px;
-}
-
-.custom-card .card-title {
-  color: #00ff9d; /* Green color for card title */
-  font-size: 1.2rem;
-}
-
-.custom-card .card-text {
-  color: #cfcfcf; /* Lighter text color for descriptions */
+.work__lede {
+  max-width: 44ch;
+  margin: 0 0 3.2rem;
+  font-family: var(--body-sans);
   font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
 }
 
-.custom-tabs .nav-link:hover {
-  color: #000;
-  background-color: #00ff9d; /* Same color on hover */
-  border-color: #00ff9d;
+.work__group + .work__group {
+  margin-top: 3.5rem;
 }
 
-.tab-pane {
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+/* Group label sits on its own rule, like a sheet heading */
+.work__label {
+  margin: 0 0 1.6rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.tab-pane.active {
-  opacity: 1;
+/* ── Shipped apps: the section's headline items ────────────────── */
+.work-card {
+  display: grid;
+  gap: 1.25rem 2.5rem;
+  grid-template-columns: 1fr;
+  padding: 2.2rem 0;
+  border-bottom: 1px solid var(--rule);
 }
 
-.custom-tabs .nav-tabs {
-  border-bottom: none; /* Remove the border line below the tabs */
-}
+@media (min-width: 900px) {
+  .work-card {
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
 
-.custom-tabs .nav-tabs::after {
-  display: none; /* Ensure no border line or shadow under the tabs */
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .custom-card img {
-    height: 300px; /* Adjust the height for smaller screens */
+  .work-card__body {
+    padding-left: 2.5rem;
+    border-left: 1px solid var(--rule);
   }
 }
 
-@media (max-width: 480px) {
-  .custom-card img {
-    height: 250px; /* Adjust the height for mobile devices */
+.work-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.work-card__index {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.work-card__name {
+  margin: 0;
+  font-family: var(--display-serif);
+  font-size: 1.65rem;
+  font-weight: 500;
+}
+
+.work-card__kind {
+  margin: 0.15rem 0 1rem;
+  font-family: var(--body-sans);
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+.work-card__points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-card__points li {
+  position: relative;
+  margin-bottom: 0.6rem;
+  padding-left: 1.2rem;
+  font-family: var(--body-sans);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Square marker, matching the Experience bullets */
+.work-card__points li::before {
+  content: "";
+  position: absolute;
+  top: 0.6em;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--ink);
+}
+
+.work-card__tech {
+  margin: 1.1rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+
+.work-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 1.1rem 0 0;
+}
+
+/* The one place the section takes the accent: these are the links that make
+   the claim checkable, so they are the thing to click. */
+.work-card__link {
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--accent-ink);
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.work-card__link:hover,
+.work-card__link:focus-visible {
+  background-color: var(--accent-ink);
+  color: var(--hero-bg);
+}
+
+/* ── Other builds: compact ruled rows ──────────────────────────── */
+.work-row {
+  display: grid;
+  gap: 0.3rem 2rem;
+  grid-template-columns: 1fr;
+  padding: 1.3rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+@media (min-width: 720px) {
+  .work-row {
+    align-items: baseline;
+    grid-template-columns: 3rem minmax(0, 14rem) minmax(0, 1fr) auto;
+    gap: 0 2rem;
   }
 }
 
-.custom-card .card-title,
-.custom-card .card-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; /* Ensures the text does not wrap */
+.work-row__index {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-muted);
+}
+
+.work-row__name {
+  margin: 0;
+  font-family: var(--display-serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.work-row__note {
+  margin: 0;
+  font-family: var(--body-sans);
+  font-size: 0.92rem;
+  color: var(--ink-muted);
+}
+
+.work-row__tech {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
 }

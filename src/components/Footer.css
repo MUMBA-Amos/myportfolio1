@@ -1,0 +1,44 @@
+/* Colophon: the page's last rule, on the same paper as everything above it.
+   It was a black bar, which put a hard edge under a paper page. */
+.colophon {
+  padding: 2.2rem 0 2.6rem;
+  background-color: var(--hero-bg);
+  background-image: var(--paper-grain);
+  background-repeat: repeat;
+  background-size: var(--paper-grain-size) var(--paper-grain-size);
+  color: var(--hero-ink-muted);
+}
+
+.colophon__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 2rem;
+  padding-top: 1.4rem;
+  /* Rule above, with ruler ticks hanging under it, like the section heads */
+  background-image:
+    linear-gradient(var(--hero-ink-soft), var(--hero-ink-soft)),
+    repeating-linear-gradient(
+      to right,
+      rgba(27, 30, 12, 0.34) 0 1px,
+      transparent 1px 12px
+    );
+  background-size: 100% 1px, 100% 5px;
+  background-position: left top, left top;
+  background-repeat: no-repeat;
+}
+
+.colophon__name {
+  font-family: var(--display-serif);
+  font-size: 1.05rem;
+  color: var(--hero-ink);
+}
+
+.colophon__role,
+.colophon__year {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}

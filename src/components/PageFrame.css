@@ -1,0 +1,55 @@
+/* Drawing frame around the page: hairlines inset from the viewport edges,
+   ruler ticks along them, crosses at the corners. Fixed, so it stays put
+   while the page scrolls beneath it.
+
+   Drawn with background gradients rather than borders — borders do not
+   paint reliably in this project, gradients always do.
+
+   The three inks are variables so the frame can invert over a dark section.
+   Straight ink over .tech-section's ground would composite to 14 against 10:
+   the frame would silently disappear for that whole section. */
+.frame {
+  --frame-line: rgba(27, 30, 12, 0.26);
+  --frame-tick: rgba(27, 30, 12, 0.34);
+  --frame-cross: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%231b1e0c' stroke-width='1' opacity='0.55'/></svg>");
+
+  position: fixed;
+  inset: var(--frame-inset);
+  /* Above the navbar (1030). The frame surrounds the whole page, the bar
+     included, so an opaque bar must not paint over its top rule or the two
+     upper corner crosses. Safe to sit on top: it never takes a click. */
+  z-index: 1040;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(var(--frame-line), var(--frame-line)), linear-gradient(var(--frame-line), var(--frame-line)), linear-gradient(var(--frame-line), var(--frame-line)), linear-gradient(var(--frame-line), var(--frame-line)),
+    repeating-linear-gradient(to right, var(--frame-tick) 0 1px, transparent 1px 12px), repeating-linear-gradient(to right, var(--frame-tick) 0 1px, transparent 1px 12px), repeating-linear-gradient(to bottom, var(--frame-tick) 0 1px, transparent 1px 12px), repeating-linear-gradient(to bottom, var(--frame-tick) 0 1px, transparent 1px 12px),
+    var(--frame-cross), var(--frame-cross), var(--frame-cross), var(--frame-cross);
+
+  background-size:
+    100% 1px, 100% 1px, 1px 100%, 1px 100%,
+    100% 5px, 100% 5px, 5px 100%, 5px 100%,
+    auto, auto, auto, auto;
+
+  background-position:
+    left top, left bottom, left top, right top,
+    left top, left bottom, left top, right top,
+    left -6px top -6px, right -6px top -6px,
+    left -6px bottom -6px, right -6px bottom -6px;
+
+  background-repeat: no-repeat;
+}
+
+/* Over the ink section: the same frame drawn in paper instead */
+.frame--on-dark {
+  --frame-line: rgba(245, 245, 239, 0.3);
+  --frame-tick: rgba(245, 245, 239, 0.38);
+  --frame-cross: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%23f5f5ef' stroke-width='1' opacity='0.55'/></svg>");
+}
+
+/* The frame is drawing furniture; hide it where the screen is small */
+@media (max-width: 767px) {
+  .frame {
+    display: none;
+  }
+}

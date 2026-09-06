@@ -1,196 +1,164 @@
-import React from "react";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-import { Tabs, Tab, Card, Container } from "react-bootstrap";
-import "./Projects.css"; // Assuming you have custom styles here
+import React, { useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import DrawnLines from "./DrawnLines";
+import "./Projects.css";
 
-import Project1Image from "./images/C.png";
-import Project2Image from "./images/Webapp.png";
-import Project3Image from "./images/ai.png";
-import Project4Image from "./images/kpi.png";
-import Project5Image from "./images/aii.png";
-import Project6Image from "./images/nlp.png";
-import Project7Image from "./images/cms.png";
-import Project8Image from "./images/ccna.png";
+gsap.registerPlugin(ScrollTrigger);
 
-// Achievements
-import achievement1 from "./images/eden.jpeg";
-import achievement2 from "./images/au.png";
-
-// Personal
-import personal1 from "./images/b.JPG";
-import personal2 from "./images/t.JPG";
-import personal3 from "./images/as.JPG";
-
-const projects = [
+/**
+ * Selected work. Two tiers: the apps that are live in the stores, then the
+ * builds behind them. Experience already covers the client platforms, so
+ * this section is the independent work rather than a second telling of it.
+ */
+const shipped = [
   {
-    title: "C Custom Program",
-    description: "Library management program.",
-    image: Project1Image,
+    index: "01",
+    name: "Trainioapp",
+    kind: "Personal trainer and client marketplace",
+    platform: "iOS and Android",
+    role: "Sole developer",
+    points: [
+      "Two-sided marketplace with swipe-based discovery, real-time chat and session booking, with separate flows for trainers and clients.",
+      "Profile management, certifications, earnings tracking, client leads, and a workout and diet plan builder, with Google Maps for location-based discovery.",
+      "Subscription billing with gated features, published as signed builds to both stores.",
+    ],
+    tech: "React Native · Expo · TypeScript · Supabase · RevenueCat · Google Maps API",
+    links: [
+      { label: "App Store", href: "https://apps.apple.com/app/trainioapp" },
+      {
+        label: "Google Play",
+        href: "https://play.google.com/store/apps/details?id=com.trainioapp",
+      },
+    ],
   },
   {
-    title: "LeanerZone Website",
-    description: "A Dutch company teaching new skills.",
-    image: Project2Image,
-  },
-  {
-    title: "Three-Bottles Problem",
-    description: "Solved using search algorithms.",
-    image: Project3Image,
-  },
-  {
-    title: "KPI Management System",
-    description: "Track and analyze performance metrics.",
-    image: Project4Image,
-  },
-  {
-    title: "Bird Species Classification",
-    description: "Classified bird species using CUB-200 dataset.",
-    image: Project5Image,
-  },
-  {
-    title: "E-commerce Categorization",
-    description: "NLP classifier for product categorization.",
-    image: Project6Image,
-  },
-  {
-    title: "CMS Admin Panel",
-    description: "Dynamic CMS admin panel using PHP.",
-    image: Project7Image,
-  },
-  {
-    title: "CCNA Certification",
-    description: "Earned CCNA certification.",
-    image: Project8Image,
+    index: "02",
+    name: "PupMood",
+    kind: "Dog mood tracking",
+    platform: "iOS",
+    role: "Sole developer",
+    points: [
+      "Logs and analyses a dog's mood over time, with multi-dog support, streak tracking and time-of-day mood bucketing.",
+      "Animated component set with haptic and audio feedback, tuned to render smoothly across a range of devices.",
+      "Authentication, route-guarded onboarding, data sync, subscription entitlement gating and push notifications, taken through App Store review.",
+    ],
+    tech: "React Native · Expo · TypeScript · Supabase · RevenueCat · EAS Build",
+    links: [{ label: "App Store", href: "https://apps.apple.com/app/pupmood" }],
   },
 ];
 
-const achievements = [
+const builds = [
   {
-    title: "Director of Special Events",
-    description: "Eden Kuching event management.",
-    image: achievement1,
+    index: "03",
+    name: "Bird species classification",
+    note: "Deep learning on the CUB-200 dataset",
+    tech: "Python · TensorFlow",
   },
   {
-    title: "Africa Unites Vice President",
-    description: "Leadership and team management.",
-    image: achievement2,
+    index: "04",
+    name: "E-commerce categorisation",
+    note: "NLP classifier for product taxonomies",
+    tech: "Python · NLP",
+  },
+  {
+    index: "05",
+    name: "KPI management system",
+    note: "Tracking and analysing performance metrics",
+    tech: "Web · SQL",
   },
 ];
-
-const personal = [
-  {
-    title: "Body Building",
-    description: "Passionate about fitness and discipline.",
-    image: personal1,
-  },
-  {
-    title: "Travelling",
-    description: "Love exploring new places.",
-    image: personal2,
-  },
-  {
-    title: "Reading",
-    description: "Enjoy learning new things through reading.",
-    image: personal3,
-  },
-];
-
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 1024 },
-    items: 3,
-  },
-  desktop: {
-    breakpoint: { max: 1024, min: 768 },
-    items: 2,
-  },
-  tablet: {
-    breakpoint: { max: 768, min: 464 },
-    items: 1,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
-};
 
 const Projects = () => {
+  const rootRef = useRef(null);
+
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+
+      gsap.from(".work-card, .work-row", {
+        y: 28,
+        autoAlpha: 0,
+        duration: 0.5,
+        ease: "power2.out",
+        stagger: 0.1,
+        scrollTrigger: { trigger: rootRef.current, start: "top 72%" },
+      });
+    },
+    { scope: rootRef }
+  );
+
   return (
-    <section className="projects-section">
-      <Container>
-        <Tabs
-          defaultActiveKey="projects"
-          id="projects-achievements-tabs"
-          className="justify-content-center custom-tabs"
-        >
-          <Tab eventKey="projects" title="My Projects">
-            <Carousel
-              responsive={responsive}
-              infinite
-              showDots
-              autoPlay
-              autoPlaySpeed={3000}
-            >
-              {projects.map((project, index) => (
-                <Card className="text-white m-2 custom-card" key={index}>
-                  <Card.Img
-                    variant="top"
-                    src={project.image}
-                    alt={project.title}
-                  />
-                  <Card.Body>
-                    <Card.Title>{project.title}</Card.Title>
-                    <Card.Text>{project.description}</Card.Text>
-                  </Card.Body>
-                </Card>
-              ))}
-            </Carousel>
-          </Tab>
-          <Tab eventKey="achievements" title="Achievements">
-            <Carousel
-              responsive={responsive}
-              infinite
-              showDots
-              autoPlay
-              autoPlaySpeed={3000}
-            >
-              {achievements.map((achievement, index) => (
-                <Card className="text-white m-2 custom-card" key={index}>
-                  <Card.Img
-                    variant="top"
-                    src={achievement.image}
-                    alt={achievement.title}
-                  />
-                  <Card.Body>
-                    <Card.Title>{achievement.title}</Card.Title>
-                    <Card.Text>{achievement.description}</Card.Text>
-                  </Card.Body>
-                </Card>
-              ))}
-            </Carousel>
-          </Tab>
-          <Tab eventKey="personal" title="Personal">
-            <Carousel
-              responsive={responsive}
-              infinite
-              showDots
-              autoPlay
-              autoPlaySpeed={3000}
-            >
-              {personal.map((item, index) => (
-                <Card className="text-white m-2 custom-card" key={index}>
-                  <Card.Img variant="top" src={item.image} alt={item.title} />
-                  <Card.Body>
-                    <Card.Title>{item.title}</Card.Title>
-                    <Card.Text>{item.description}</Card.Text>
-                  </Card.Body>
-                </Card>
-              ))}
-            </Carousel>
-          </Tab>
-        </Tabs>
-      </Container>
+    <section id="projects" ref={rootRef} className="work">
+      <DrawnLines />
+      <div className="container">
+        <header className="work__head">
+          <span className="work__kicker">Selected work</span>
+          <h2 className="work__title">Things I&rsquo;ve built</h2>
+        </header>
+
+        <p className="work__lede">
+          Two apps are live in the stores; the rest are the builds behind them.
+          Client platforms are under Experience.
+        </p>
+
+        <div className="work__group">
+          <h3 className="work__label">Shipped</h3>
+
+          {shipped.map((app) => (
+            <article className="work-card" key={app.name}>
+              <div className="work-card__meta">
+                <span className="work-card__index">{app.index}</span>
+                <span className="work-card__platform">{app.platform}</span>
+                <span className="work-card__role">{app.role}</span>
+              </div>
+
+              <div className="work-card__body">
+                <h4 className="work-card__name">{app.name}</h4>
+                <p className="work-card__kind">{app.kind}</p>
+
+                <ul className="work-card__points">
+                  {app.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+
+                <p className="work-card__tech">{app.tech}</p>
+
+                <p className="work-card__links">
+                  {app.links.map(({ label, href }) => (
+                    <a
+                      key={label}
+                      className="work-card__link"
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {label}
+                    </a>
+                  ))}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="work__group">
+          <h3 className="work__label">Other builds</h3>
+
+          {builds.map((build) => (
+            <article className="work-row" key={build.name}>
+              <span className="work-row__index">{build.index}</span>
+              <h4 className="work-row__name">{build.name}</h4>
+              <p className="work-row__note">{build.note}</p>
+              <span className="work-row__tech">{build.tech}</span>
+            </article>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };

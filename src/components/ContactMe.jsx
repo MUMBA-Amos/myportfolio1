@@ -1,144 +1,168 @@
-import React, { useState } from "react";
-import { Form, Button, Container } from "react-bootstrap";
+import React, { useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import DrawnLines from "./DrawnLines";
+import "./ContactMe.css";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const details = [
+  { label: "Email", value: "mumbantambo@gmail.com", href: "mailto:mumbantambo@gmail.com" },
+  { label: "Phone", value: "+60 17 630 7134", href: "tel:+60176307134" },
+  {
+    label: "LinkedIn",
+    value: "mumba-amos-ntambo",
+    href: "https://www.linkedin.com/in/mumba-amos-ntambo-54a665214/",
+  },
+  { label: "Location", value: "Kuala Lumpur, Malaysia" },
+];
 
 const ContactMe = () => {
-  const [formData, setFormData] = useState({
+  const rootRef = useRef(null);
+  const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
 
-  const handleSubmit = (e) => {
+      gsap.from(".contact__field, .contact__detail", {
+        y: 20,
+        autoAlpha: 0,
+        duration: 0.45,
+        ease: "power2.out",
+        stagger: 0.06,
+        scrollTrigger: { trigger: rootRef.current, start: "top 75%" },
+      });
+    },
+    { scope: rootRef }
+  );
+
+  const change = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const submit = (e) => {
     e.preventDefault();
-    const { name, email, phone, message } = formData;
+    const { name, email, phone, message } = form;
+    // No backend: this hands the message to the visitor's own mail client
+    // with everything already filled in.
+    const body = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      phone && `Phone: ${phone}`,
+      "",
+      message,
+    ]
+      .filter(Boolean)
+      .join("\n");
 
-    // Construct the mailto link
-    const mailtoLink = `mailto:mumbantambo@gmail.com?subject=Contact Form Submission from ${name}&body=Name: ${name}%0AEmail: ${email}%0APhone: ${phone}%0AMessage: ${message}`;
-
-    // Open the mailto link in the default email client
-    window.location.href = mailtoLink;
+    window.location.href =
+      `mailto:mumbantambo@gmail.com` +
+      `?subject=${encodeURIComponent(`Portfolio enquiry from ${name}`)}` +
+      `&body=${encodeURIComponent(body)}`;
   };
 
   return (
-    <section id="contactSection" style={styles.contactSection}>
-      <Container style={styles.container}>
-        <h2 style={styles.heading} className="text-center mb-4">
-          Contact Me
-        </h2>
-        <div style={styles.formWrapper}>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formName">
-              <Form.Label style={styles.label}>Name</Form.Label>
-              <Form.Control
-                type="text"
+    <section id="contactSection" ref={rootRef} className="contact">
+      <DrawnLines />
+      <div className="container">
+        <header className="contact__head">
+          <span className="contact__kicker">Contact</span>
+          <h2 className="contact__title">Get in touch</h2>
+        </header>
+
+        <div className="contact__grid">
+          <div className="contact__details">
+            {details.map(({ label, value, href }) => (
+              <div className="contact__detail" key={label}>
+                <span className="contact__detail-label">{label}</span>
+                {href ? (
+                  <a className="contact__detail-value" href={href}>
+                    {value}
+                  </a>
+                ) : (
+                  <span className="contact__detail-value">{value}</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <form className="contact__form" onSubmit={submit}>
+            <div className="contact__field">
+              <label className="contact__label" htmlFor="contact-name">
+                Name
+              </label>
+              <input
+                className="contact__input"
+                id="contact-name"
                 name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter your name"
+                type="text"
+                value={form.name}
+                onChange={change}
                 required
-                style={styles.input}
               />
-            </Form.Group>
+            </div>
 
-            <Form.Group controlId="formEmail">
-              <Form.Label style={styles.label}>Email address</Form.Label>
-              <Form.Control
-                type="email"
+            <div className="contact__field">
+              <label className="contact__label" htmlFor="contact-email">
+                Email
+              </label>
+              <input
+                className="contact__input"
+                id="contact-email"
                 name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
+                type="email"
+                value={form.email}
+                onChange={change}
                 required
-                style={styles.input}
               />
-            </Form.Group>
+            </div>
 
-            <Form.Group controlId="formPhone">
-              <Form.Label style={styles.label}>Phone Number</Form.Label>
-              <Form.Control
-                type="tel"
+            <div className="contact__field">
+              <label className="contact__label" htmlFor="contact-phone">
+                Phone <span className="contact__optional">optional</span>
+              </label>
+              <input
+                className="contact__input"
+                id="contact-phone"
                 name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Enter your phone number"
-                required
-                style={styles.input}
+                type="tel"
+                value={form.phone}
+                onChange={change}
               />
-            </Form.Group>
+            </div>
 
-            <Form.Group controlId="formMessage">
-              <Form.Label style={styles.label}>Message</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={5}
+            <div className="contact__field">
+              <label className="contact__label" htmlFor="contact-message">
+                Message
+              </label>
+              <textarea
+                className="contact__input contact__input--area"
+                id="contact-message"
                 name="message"
-                value={formData.message}
-                onChange={handleChange}
-                placeholder="Enter your message"
+                rows={5}
+                value={form.message}
+                onChange={change}
                 required
-                style={styles.textarea}
               />
-            </Form.Group>
+            </div>
 
-            <Button variant="success" type="submit" className="mt-3 btn-block">
-              Send Message
-            </Button>
-          </Form>
+            <button className="contact__send" type="submit">
+              Send message
+            </button>
+            <p className="contact__hint">Opens in your mail app.</p>
+          </form>
         </div>
-      </Container>
+      </div>
     </section>
   );
-};
-
-const styles = {
-  contactSection: {
-    backgroundColor: "#0a0a0a",
-    padding: "60px 0",
-    color: "white",
-  },
-  container: {
-    maxWidth: "600px",
-    margin: "0 auto",
-  },
-  heading: {
-    color: "#00ff9d",
-    fontSize: "2.5rem",
-    fontWeight: "bold",
-  },
-  label: {
-    color: "white",
-  },
-  input: {
-    backgroundColor: "transparent",
-    color: "white",
-    border: "1px solid #555",
-    borderRadius: "5px",
-    padding: "10px",
-    marginBottom: "15px",
-  },
-  textarea: {
-    backgroundColor: "transparent",
-    color: "white",
-    border: "1px solid #555",
-    borderRadius: "5px",
-    padding: "10px",
-    marginBottom: "15px",
-  },
-  formWrapper: {
-    backgroundColor: "#1a1a1a",
-    border: "2px solid #00ff9d",
-    borderRadius: "10px",
-    padding: "30px",
-    boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.5)",
-  },
 };
 
 export default ContactMe;

@@ -1,153 +1,516 @@
-import React from "react";
-import CountUp from "react-countup";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { gsap } from "gsap";
+import { TextPlugin } from "gsap/TextPlugin";
+import { SplitText } from "gsap/SplitText";
+import { Physics2DPlugin } from "gsap/Physics2DPlugin";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import {
   FaPhone,
   FaLinkedin,
-  FaFacebook,
   FaWhatsapp,
   FaGithub,
 } from "react-icons/fa";
-import Navbar from "./Navbar";
 import "./Header.css";
-import mumbaImage from "./mumba.png";
+import { scrollToSection } from "../lib/scroll";
+import IpodPlayer from "./IpodPlayer";
+import DrawnLines from "./DrawnLines";
+
+gsap.registerPlugin(TextPlugin, SplitText, Physics2DPlugin, ScrollTrigger);
+
+const stats = [
+  { figure: "3", label: "Years Experience" },
+  { figure: "8", label: "Projects Completed" },
+  { figure: "30+", label: "Technologies Used" },
+];
+
+// How long the hero holds while the papers fold, in pixels of scroll
+const HOLD = 700;
+
+// Scroll the wipe spends taking the hero off the section underneath it
+const WIPE = 640;
+
+// The section the hero is pulled off to uncover: whatever comes first below
+// it, which is Experience
+const NEXT = ".xp";
+
+// Each sheet's crease reaches this fraction of its short side: about half
+// the sheet, which is as far as a page turns down before it wants creasing
+const sheets = [
+  { el: ".newspaper", reach: 0.5 },
+  { el: ".note", reach: 0.45 },
+];
+
+const roles = [
+  "Developer",
+  "Web Developer",
+  "AI Engineer",
+  "Full Stack Developer",
+  "Frontend Developer",
+  "Backend Developer",
+];
+
+const sections = [
+  { to: "skills", label: "Skills" },
+  { to: "projects", label: "Projects" },
+  { to: "contactSection", label: "Contact" },
+];
 
 const Header = ({ contactRef }) => {
+  const roleRef = useRef(null);
+  const nameRef = useRef(null);
+  const actionsRef = useRef(null);
+
+  const { contextSafe } = useGSAP(() => {
+    // mask:"chars" wraps each character so it can rise out of its own clip
+    const split = new SplitText(nameRef.current, {
+      type: "chars",
+      mask: "chars",
+    });
+
+    // Only the o's keep spinning once the entrance lands
+    const spinners = split.chars.filter(
+      (char) => char.textContent.toLowerCase() === "o"
+    );
+
+    // One entrance: the name rises character by character
+    gsap
+      .timeline()
+      .from(split.chars, {
+        yPercent: 120,
+        duration: 0.6,
+        ease: "power3.out",
+        stagger: 0.03,
+      })
+      .add(() => {
+        // mask:"chars" clips each glyph, which would crop it mid-spin
+        split.chars.forEach((char) => {
+          if (char.parentNode) char.parentNode.style.overflow = "visible";
+        });
+
+        gsap.to(spinners, {
+          rotation: 360,
+          duration: 7,
+          ease: "none",
+          repeat: -1,
+          transformOrigin: "50% 50%",
+          stagger: 0.4,
+        });
+      });
+
+    // Scrapbook entrance: the pieces are laid onto the desk one after
+    // another, each dropping a little way in from its own angle so they
+    // read as placed by hand rather than faded in together. `from` tweens
+    // land on whatever each sheet already sits at, so the note and the iPod
+    // keep the resting tilts their CSS gives them.
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // A `from` tween records whatever state it finds as the one to land
+      // on. StrictMode mounts twice in development, so the second pass can
+      // find these sheets still at the first pass's start state and animate
+      // them from hidden to hidden: they stay at opacity 0 for good, taking
+      // View CV and the social row with them, since a sheet the browser
+      // cannot see is a sheet it will not hand a click to. Clearing first
+      // makes the landing state the CSS one on every mount.
+      gsap.set([".newspaper", ".note", ".ipod"], { clearProps: "all" });
+
+      gsap
+        .timeline({ delay: 0.35, defaults: { ease: "power3.out" } })
+        .from(".newspaper", {
+          y: 48,
+          rotation: -5,
+          scale: 0.96,
+          autoAlpha: 0,
+          duration: 0.9,
+        })
+        .from(
+          ".note",
+          { y: 36, rotation: 8, scale: 0.94, autoAlpha: 0, duration: 0.75 },
+          "-=0.55"
+        )
+        .from(
+          ".ipod",
+          { y: 30, rotation: -7, scale: 0.95, autoAlpha: 0, duration: 0.7 },
+          "-=0.45"
+        );
+    }
+
+    // Leaving the hero is one held movement rather than a scroll: the hero
+    // stops at its bottom edge, the sheets fold, and then the hero itself is
+    // cut away from the top edge down, uncovering the section beneath it.
+    //
+    // What makes the uncovering work is that the hold takes no pin spacing.
+    // The page keeps flowing behind the held hero, so the section below
+    // travels up under it while it is stopped — one screen of travel, which
+    // is exactly what it takes to go from the bottom edge of the screen to
+    // the top. It then holds still there for the length of the wipe, so what
+    // the cut uncovers is a settled page, not one still moving.
+    const mm = gsap.matchMedia();
+
+    mm.add(
+      "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+      () => {
+        const next = document.querySelector(NEXT);
+        const hero = document.querySelector(".header");
+
+        // Anywhere at or past the start of the hold, the hero is under the
+        // cut; above it, it is a whole sheet. Read off the scroll rather
+        // than the trigger's progress, which is not settled yet at the
+        // point a refresh asks.
+        const markCut = (self) =>
+          hero.classList.toggle("header--cut", self.scroll() >= self.start);
+
+        // Holds from the hero's bottom edge, not its top: the hero is taller
+        // than the viewport, so pinning at the top would hold the half of it
+        // nobody has read yet.
+        ScrollTrigger.create({
+          trigger: ".header",
+          start: "bottom bottom",
+          end: () => "+=" + (window.innerHeight + WIPE),
+          pin: true,
+          // Measured on every refresh, since it is a screen height
+          invalidateOnRefresh: true,
+          // No spacer: this is what lets the next section come up behind the
+          // hero instead of waiting below the hold.
+          pinSpacing: false,
+          // Topmost pin on the page, so it is measured first and the ones
+          // below it are laid out against a settled page
+          refreshPriority: 5,
+          // Marks the hero from the moment the hold starts and leaves it
+          // marked afterwards. With no pin spacing the hero is left lying
+          // over the section below it once the hold is done, so the cut has
+          // to stay on it — uncut it would paint straight over that
+          // section. Only scrolling back above the hold makes it a whole
+          // sheet again, and off the class nothing reads --wipe, so a value
+          // left behind by a scrub cannot crop it up there.
+          //
+          // Both callbacks run the same check, on the same trigger: the
+          // toggle covers arriving and leaving, the refresh covers landing
+          // partway down the page, where no toggle ever fires.
+          onToggle: markCut,
+          onRefresh: markCut,
+        });
+
+        // The fold runs over the first stretch of the hold. Only --fold is
+        // animated: the crease and the turned-back corner are both drawn
+        // from it in CSS, so they cannot drift apart.
+        const fold = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".header",
+            start: "bottom bottom",
+            end: "+=" + HOLD,
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+            refreshPriority: 5,
+          },
+        });
+
+        sheets.forEach(({ el, reach }, i) => {
+          fold.to(
+            el,
+            {
+              // Measured off the sheet, so the crease keeps its 45 degrees
+              // whatever the viewport does to the layout
+              "--fold": () => {
+                const node = document.querySelector(el);
+                if (!node) return "0px";
+                const box = node.getBoundingClientRect();
+                return Math.min(box.width, box.height) * reach + "px";
+              },
+              ease: "none",
+              duration: 1,
+            },
+            // Slight offset so the two sheets do not move as one slab
+            i * 0.12
+          );
+        });
+
+        if (!next) return;
+
+        // The uncovered section stands still while the hero comes off it.
+        ScrollTrigger.create({
+          trigger: next,
+          start: "top top",
+          end: "+=" + WIPE,
+          pin: true,
+          invalidateOnRefresh: true,
+          // Below the hero's pin, above the ones further down the page
+          refreshPriority: 4,
+        });
+
+        // The cut: the hero's top edge travels down over it and the hero
+        // dims as it goes, so the sheet reads as being taken off the page
+        // rather than fading. The section under it comes in a shade hot, as
+        // if it had been lit through the sheet that was covering it.
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: next,
+              start: "top top",
+              end: "+=" + WIPE,
+              scrub: 0.4,
+              invalidateOnRefresh: true,
+              refreshPriority: 4,
+            },
+          })
+          .fromTo(
+            ".header",
+            // How far the wipe has travelled down the screen. Only this is
+            // animated; where it lands on the hero is worked out in CSS,
+            // measured off the screen rather than off the hero, which is
+            // taller than the screen and mostly above the top of it.
+            { "--wipe": "0px", filter: "brightness(1)" },
+            {
+              "--wipe": () => window.innerHeight + "px",
+              filter: "brightness(0.78)",
+              ease: "none",
+              // Nothing is written until the reader is in the range
+              immediateRender: false,
+            },
+            0
+          )
+          .fromTo(
+            next,
+            { filter: "brightness(1.12)" },
+            { filter: "brightness(1)", ease: "none", immediateRender: false },
+            0
+          );
+      }
+    );
+
+    // Role tagline picks up once the entrance has landed
+    const rolesTl = gsap.timeline({ repeat: -1, delay: 1.6 });
+
+    roles.forEach((role) => {
+      rolesTl
+        .to(roleRef.current, {
+          duration: 1,
+          text: { value: role },
+          ease: "none",
+        })
+        .to({}, { duration: 1.5 });
+    });
+
+    // SplitText rewrites the DOM, and matchMedia owns the pin: undo both
+    return () => {
+      mm.revert();
+      split.revert();
+    };
+  });
+
+  // Confetti burst from the click point, thrown by Physics2DPlugin
+  const burst = contextSafe((event) => {
+    const host = actionsRef.current;
+    if (!host || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const rect = host.getBoundingClientRect();
+    const originX = event.clientX - rect.left;
+    const originY = event.clientY - rect.top;
+
+    const pieces = Array.from({ length: 26 }, () => {
+      const piece = document.createElement("span");
+      piece.className = "hero-spark";
+      host.appendChild(piece);
+      return piece;
+    });
+
+    gsap.set(pieces, {
+      x: originX,
+      y: originY,
+      scale: () => gsap.utils.random(0.5, 1.3),
+      backgroundColor: () => gsap.utils.random(["#1b1e0c", "#3f4a15", "#f6f7e6"]),
+    });
+
+    gsap.to(pieces, {
+      duration: 1.5,
+      // angle 270 is straight up; gravity pulls the pieces back down
+      physics2D: {
+        velocity: () => gsap.utils.random(260, 560),
+        angle: () => gsap.utils.random(235, 305),
+        gravity: 900,
+      },
+      rotation: () => gsap.utils.random(-300, 300),
+      opacity: 0,
+      ease: "none",
+      onComplete: () => pieces.forEach((piece) => piece.remove()),
+    });
+  });
+
   const scrollToContact = () => {
     contactRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <header className="header d-flex align-items-center">
+    <header id="home" className="header d-flex">
+      <DrawnLines />
       <div className="container">
-        <Navbar />
-        <div className="hero-content row align-items-center text-white mt-5">
-          <div className="hero-image col-lg-4 col-md-5 col-sm-12 text-center mt-4 mt-md-0 order-1 order-md-2">
-            <div style={styles.photoContainer}>
-              <div style={styles.photo}>
-                <img
-                  src={mumbaImage}
-                  alt="Mumba Amos Ntambo"
-                  style={styles.profileImage}
-                />
-                <motion.div
-                  style={styles.spinningBorder}
-                  animate={{ rotate: -360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 120,
-                    ease: "linear",
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="hero-text col-lg-8 col-md-7 col-sm-12 order-2 order-md-1">
+        <div className="hero-content row align-items-center mt-5">
+          <div className="hero-text col-12">
             <h1>
-              Hello I'm <span className="text-success">Mumba Amos Ntambo</span>
+              <span className="hero-greeting">Hello I&rsquo;m</span>
+              <span className="hero-name">
+                <span className="hero-name__text" ref={nameRef}>
+                  Mumba Amos Ntambo
+                </span>
+              </span>
             </h1>
-            <p className="lead">Developer</p><br />
-            <p>
-              Hello Everyone! I love creating and building, and I’m always eager
-              to learn and grow my skills. Explore my work to see the projects
-              I’ve completed and the skills I’ve developed along the way. I’m
-              excited about new challenges and ready to bring fresh ideas to
-              life.
-            </p>
-            <div className="d-flex align-items-center mt-3 justify-content-center justify-content-md-start">
-              <a
-                href="/myportfolio1/cv.pdf"
-                download="Mumba_Amos_Ntambo_CV.pdf"
-                className="btn btn-success"
-              >
-                View CV
-              </a>
-              <div className="social-icons ml-4">
-                <a href="tel:+60176307134" className="icon">
-                  <FaPhone />
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/mumba-amos-ntambo-54a665214/"
-                  className="icon"
-                >
-                  <FaLinkedin />
-                </a>
-                <a href="https://facebook.com" className="icon">
-                  <FaFacebook />
-                </a>
-                <a
-                  href="https://wa.me/+60176307134?text=Hello%20Mumba!"
-                  className="icon"
-                >
-                  <FaWhatsapp />
-                </a>
-                <a href="https://github.com" className="icon">
-                  <FaGithub />
-                </a>
+            <div className="hero-sheets">
+            <div className="newspaper">
+              {/* Roughens the paper silhouette; text stays unfiltered above it */}
+              <svg className="newspaper__defs" aria-hidden="true" focusable="false">
+                <defs>
+                  <filter id="tornEdge">
+                    <feTurbulence
+                      type="fractalNoise"
+                      baseFrequency="0.018 0.055"
+                      numOctaves="4"
+                      seed="7"
+                      result="noise"
+                    />
+                    <feDisplacementMap
+                      in="SourceGraphic"
+                      in2="noise"
+                      scale="11"
+                      xChannelSelector="R"
+                      yChannelSelector="G"
+                    />
+                  </filter>
+                </defs>
+              </svg>
+
+              <p className="newspaper__banner">Breaking News</p>
+
+              <div className="newspaper__dateline">
+                <span className="newspaper__role" ref={roleRef}>
+                  Developer
+                </span>
+                <span className="newspaper__folio">Vol. 01 — No. 01</span>
               </div>
+
+              <h2 className="newspaper__headline">
+                On building, learning &amp; bringing ideas to life
+              </h2>
+
+              <p className="newspaper__lede">
+                Hello Everyone! I love creating and building, and I’m always
+                eager to learn and grow my skills. Explore my work to see the
+                projects I’ve completed and the skills I’ve developed along the
+                way. I’m excited about new challenges and ready to bring fresh
+                ideas to life.
+              </p>
+
+              <blockquote className="newspaper__quote">
+                “I love creating and building.”
+              </blockquote>
+
+              <div
+                ref={actionsRef}
+                className="hero-actions d-flex align-items-center flex-wrap"
+              >
+                {/* No `download` attribute: the button says View, so it
+                    opens the PDF in the browser's own viewer rather than
+                    dropping a file in the visitor's downloads. Saving it is
+                    one click from there for anyone who wants to. */}
+                <a
+                  href={`${process.env.PUBLIC_URL}/cv.pdf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn hero-cv"
+                  onClick={burst}
+                >
+                  View CV
+                </a>
+                <div className="social-icons ml-4">
+                  <a href="tel:+60176307134" className="icon">
+                    <FaPhone />
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/mumba-amos-ntambo-54a665214/"
+                    className="icon"
+                  >
+                    <FaLinkedin />
+                  </a>
+                  <a
+                    href="https://wa.me/+60176307134?text=Hello%20Mumba!"
+                    className="icon"
+                  >
+                    <FaWhatsapp />
+                  </a>
+                  <a href="https://github.com" className="icon">
+                    <FaGithub />
+                  </a>
+                </div>
+              </div>
+
+              <span className="paper-fold" aria-hidden="true" />
+            </div>
+
+            <div className="hero-side">
+            <aside className="note">
+              {/* Finer, more frequent nicks than the newspaper's long tears */}
+              <svg className="note__defs" aria-hidden="true" focusable="false">
+                <defs>
+                  <filter id="chippedEdge">
+                    <feTurbulence
+                      type="fractalNoise"
+                      baseFrequency="0.05 0.045"
+                      numOctaves="3"
+                      seed="3"
+                      result="noise"
+                    />
+                    <feDisplacementMap
+                      in="SourceGraphic"
+                      in2="noise"
+                      scale="7"
+                      xChannelSelector="R"
+                      yChannelSelector="G"
+                    />
+                  </filter>
+                </defs>
+              </svg>
+
+              <span className="note__tape" aria-hidden="true" />
+              <h2 className="note__title">Inside this issue</h2>
+              <ul className="note__list">
+                {sections.map(({ to, label }) => (
+                  <li key={to} className="note__row">
+                    <a
+                      className="note__link"
+                      href={`#${to}`}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        scrollToSection(to);
+                      }}
+                    >
+                      <span className="note__box" aria-hidden="true" />
+                      <span className="note__label">{label}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              <span className="paper-fold" aria-hidden="true" />
+            </aside>
+
+            <IpodPlayer />
+            </div>
             </div>
           </div>
         </div>
-        <div className="hero-stats d-flex justify-content-around flex-wrap mt-5">
-          <div className="p-2">
-            <h2 className="text-success">
-              <CountUp start={0} end={2.5} duration={2} />
-            </h2>
-            <p>Years of experience</p>
-          </div>
-          <div className="p-2">
-            <h2 className="text-success">
-              <CountUp start={0} end={8} duration={2} />
-            </h2>
-            <p>Projects completed</p>
-          </div>
-          <div className="p-2">
-            <h2 className="text-success">
-              <CountUp start={0} end={5} duration={2} />
-            </h2>
-            <p>Technologies Used</p>
-          </div>
-          <div className="p-2">
-            <h2 className="text-success">
-              <CountUp start={0} end={20} duration={2} />
-            </h2>
-            <p>Code commits</p>
-          </div>
+        <div className="figures">
+          {stats.map(({ figure, label }) => (
+            <div className="figures__cell" key={label}>
+              <span className="figures__figure">{figure}</span>
+              <span className="figures__label">{label}</span>
+            </div>
+          ))}
         </div>
+
       </div>
     </header>
   );
 };
 
-const styles = {
-  photoContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "20px",
-  },
-  photo: {
-    position: "relative",
-    width: "400px",
-    height: "400px",
-  },
-  profileImage: {
-    borderRadius: "50%",
-    width: "100%",
-    height: "100%",
-    zIndex: 2,
-  },
-  spinningBorder: {
-    position: "absolute",
-    top: "-15px",
-    left: "-25px",
-    width: "430px",
-    height: "430px",
-    borderRadius: "50%",
-    border: "5px solid red",
-    boxSizing: "border-box",
-    zIndex: 1,
-  },
-};
 
 export default Header;

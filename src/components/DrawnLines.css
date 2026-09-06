@@ -1,0 +1,24 @@
+/* Guide lines ruled across a paper section. Sits behind the section's
+   content, which each host lifts above it with position and z-index. */
+.drawn-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.drawn-lines__line {
+  fill: none;
+  stroke: rgba(27, 30, 12, 0.16);
+  stroke-width: 1;
+}
+
+/* Nothing to draw when motion is unwelcome: the lines never animate in, so
+   leaving them hidden is quieter than a static grid nobody asked for. */
+@media (prefers-reduced-motion: reduce) {
+  .drawn-lines {
+    display: none;
+  }
+}
