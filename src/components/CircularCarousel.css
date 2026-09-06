@@ -4,25 +4,23 @@
 .tech-section {
   /* Paper inks, so the section is the same drawing seen from the other side */
   --tech-ink: #f5f5ef;
-  --tech-ink-muted: rgba(245, 245, 239, 0.62);
+  /* 0.62 blended to about #b8b8b2 on this ground — 3.8:1, under the 4.5:1
+     WCAG AA asks for at this size, and it is the cell descriptions and the
+     field labels that were set in it. 0.75 comes to 4.7:1 and passes. The
+     ground itself is fine: the full ink is 6.9:1. */
+  --tech-ink-muted: rgba(245, 245, 239, 0.75);
   --tech-rule: rgba(245, 245, 239, 0.26);
   --tech-tick: rgba(245, 245, 239, 0.34);
 
-  /* Sticks at the top of the viewport while the dwell below it scrolls, then
-     stays put while Projects rides up over it. This replaces a GSAP pin: a
-     pin and a sticky both want to control the same element's position, and
-     the sticky version is what lets a later sibling overlap it. */
-  position: sticky;
-  top: 0;
-  height: var(--screen);
-
+  /* An ordinary section now. It used to stick at the top of the viewport
+     while 2400px of dwell scrolled the strip sideways beneath it — a
+     quarter of the page's length spent showing ten items three at a time.
+     The cells are a grid, so the section is as tall as they are and the
+     reader scrolls past it like anything else. */
+  position: relative;
   display: flex;
-  /* Anchored high rather than centred. The section is uncovered from its top
-     edge downward, so centred content sat behind a screenful of empty
-     padding and only surfaced once the section had almost finished rising —
-     which is why the list needed extra scrolling to turn up. */
   align-items: flex-start;
-  padding: 15vh 0 60px;
+  padding: 6rem 0 5rem;
   /* Shared with .skills-cover, which darkens the section before this one
      to the same value so the two meet grey on grey */
   background-color: var(--tech-bg);
@@ -41,8 +39,6 @@
   background-size: 168px 168px, 124px 124px;
   background-repeat: repeat, repeat;
   color: var(--tech-ink);
-  /* The strip runs past both edges while it travels */
-  overflow: hidden;
 }
 
 .tech-inner {
@@ -89,45 +85,35 @@
   color: var(--tech-ink-muted);
 }
 
-/* ── The travelling strip ──────────────────────────────────────── */
+/* ── The specification grid ────────────────────────────────────────
+   Was a single row wider than the screen, dragged sideways as you
+   scrolled. All ten are on the page at once now: as many across as the
+   width allows, wrapping onto as many rows as it takes. Nothing to travel
+   through to find out whether a technology is listed. */
 .tech-viewport {
-  overflow: hidden;
+  overflow: visible;
 }
 
 .tech-track {
-  display: flex;
-  /* Sized by its cells, not by the viewport, so it can overflow and travel */
-  width: max-content;
-  /* Rules top and bottom run the whole length of the strip, so the cells
-     read as one ruled sheet rather than separate cards */
-  background-image:
-    linear-gradient(var(--tech-rule), var(--tech-rule)),
-    linear-gradient(var(--tech-rule), var(--tech-rule));
-  background-size: 100% 1px, 100% 1px;
-  background-position: left top, left bottom;
-  background-repeat: no-repeat;
-  will-change: transform;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  /* Ruled off top and bottom, so the block reads as one sheet the way the
+     strip did */
+  border-top: 1px solid var(--tech-rule);
+  border-bottom: 1px solid var(--tech-rule);
 }
 
-/* Each cell is ruled on its left, the way the navbar cells and the stats
-   grid are; the strip's own rules close the top and bottom. */
+/* Ruled between, the way the navbar cells and the stats grid are. Drawn on
+   the cell's own two leading edges rather than as gaps, so the rules meet
+   at the corners however many columns the width gives us. */
 .tech-cell {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.55rem;
-  width: clamp(18rem, 30vw, 26rem);
-  padding: 2.4rem 2rem 2.6rem;
-  background-image: linear-gradient(var(--tech-rule), var(--tech-rule));
-  background-size: 1px 100%;
-  background-position: left top;
-  background-repeat: no-repeat;
-}
-
-/* The first cell starts at the frame, with no rule doubling its edge */
-.tech-cell:first-child {
-  margin-left: var(--frame-inset);
-  background-image: none;
+  padding: 2rem 1.75rem 2.2rem;
+  border-left: 1px solid var(--tech-rule);
+  border-top: 1px solid var(--tech-rule);
 }
 
 .tech-cell__index {
@@ -172,41 +158,8 @@
   color: var(--tech-ink-muted);
 }
 
-/* Without the pin there is nothing driving the strip sideways, so let it
-   scroll by hand instead of hiding the cells past the edge. */
-/* ── Below the stack breakpoint ────────────────────────────────────
-   The dwell collapses to no height there (.stack__dwell in index.css), so
-   the strip has no scroll range to be driven through and the travel tween
-   is switched off to match. The viewport scrolls itself instead: the strip
-   is swiped by hand, snapping so a flick lands on a cell rather than
-   between two. Lenis leaves touch input alone, so this is not fighting it
-   for the gesture. */
-/* The one case where the strip is not driven by the page scroll: reduced
-   motion, where the travel tween does not run and the dwell has no height
-   (see .stack__dwell in index.css). The viewport scrolls itself there, and
-   keeps its scrollbar, since that is the only thing saying it can be.
-   Everywhere else the strip travels with the page and stays overflow
-   hidden. */
-@media (prefers-reduced-motion: reduce) {
-  .tech-viewport {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    /* A flick carried past either end stays in the strip rather than
-       turning into a page scroll or a back-navigation swipe */
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scrollbar-width: thin;
-    scrollbar-color: var(--tech-rule) transparent;
-  }
-
-  .tech-cell {
-    scroll-snap-align: start;
-  }
-
-  /* So the last cell can clear the right edge rather than ending flush
-     against it, the way the first one is inset from the left */
-  .tech-track {
-    padding-right: var(--frame-inset);
-  }
-}
+/* The hand-scrolling fallback that used to live here — overflow, snapping,
+   a scrollbar — was for the cases where nothing drove the strip sideways.
+   Nothing drives it anywhere now: the cells are a grid and every one of
+   them is on the page, which is what that fallback was trying to
+   approximate. */

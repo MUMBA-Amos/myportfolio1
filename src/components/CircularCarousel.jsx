@@ -109,9 +109,14 @@ const TechnologiesSection = () => {
       // over the first part of the wipe only — spread across the whole of it
       // the last cells did not land until the section had finished rising,
       // so the list read as trickling in rather than being there.
+      // opacity rather than autoAlpha: autoAlpha also sets
+      // visibility: hidden, which takes the cell out of the accessibility
+      // tree and out of find-in-page. Someone searching this page for
+      // "Kubernetes" should find it whether or not they have scrolled the
+      // strip to it. The fade looks identical.
       gsap.from([".tech-head", ".tech-cell"], {
         y: 70,
-        autoAlpha: 0,
+        opacity: 0,
         ease: "power2.out",
         stagger: 0.06,
         scrollTrigger: {
@@ -124,29 +129,13 @@ const TechnologiesSection = () => {
         },
       });
 
-      const travel = () => Math.max(0, track.scrollWidth - window.innerWidth);
-
-      // The section is held by CSS sticky now, not by a GSAP pin, so this
-      // only moves the strip. The dwell element below the section is the
-      // scroll range it is held for, so mapping the travel onto that element
-      // keeps the strip in step with how long the panel is actually visible
-      // — including on a phone, where the dwell is shorter and the strip
-      // therefore travels faster per pixel of scroll.
-      const dwell = document.querySelector(".stack__dwell");
-      if (!dwell) return;
-
-      gsap.to(track, {
-        x: () => -travel(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: dwell,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.6,
-          invalidateOnRefresh: true,
-          refreshPriority: 2,
-        },
-      });
+      // The sideways travel used to live here: the strip was a single row
+      // wider than the screen, pulled left across 2400px of dwell while the
+      // section was held. It cost about a quarter of the page's length and
+      // meant only three or four of the ten were legible at a time, so
+      // anyone scanning for a particular technology had to scroll the strip
+      // to find out whether it was there. They are a grid now, all ten at
+      // once, and the dwell is gone with it.
     },
     { scope: rootRef }
   );

@@ -1,8 +1,0 @@
-/* Threaded down the page as a faint guide; never blocks a click */
-.scroll-pen {
-  position: fixed;
-  inset: 0;
-  z-index: 3; /* above the sections and the held hero, below the navbar */
-  opacity: 0.3;
-  pointer-events: none;
-}

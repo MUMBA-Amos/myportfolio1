@@ -79,9 +79,12 @@ const Projects = () => {
         return;
       }
 
+      // opacity rather than autoAlpha, which also sets visibility: hidden
+      // and would keep every project out of find-in-page and out of the
+      // accessibility tree until it had been scrolled to.
       gsap.from(".work-card, .work-row", {
         y: 28,
-        autoAlpha: 0,
+        opacity: 0,
         duration: 0.5,
         ease: "power2.out",
         stagger: 0.1,

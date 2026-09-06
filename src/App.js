@@ -9,44 +9,65 @@ import './App.css';
 import ContactMe from './components/ContactMe';
 import CircularCarousel from "./components/CircularCarousel";
 import Navbar from "./components/Navbar";
-import ScrollPen from "./components/ScrollPen";
+import SectionCover from "./components/SectionCover";
 import PageFrame from "./components/PageFrame";
 import { startLenis } from "./lib/scroll";
 import GoToTop from "./components/GoToTop";
+import ErrorBoundary from "./components/ErrorBoundary";
 
-
-
+/**
+ * Every section is boundaried separately.
+ *
+ * Nothing here is server-rendered, so an uncaught error anywhere unmounts
+ * the whole tree and the visitor is left with a blank white page — which is
+ * exactly what happened on a machine where something the page needed was
+ * not available. Section by section, a failure costs that section and the
+ * rest of the site still stands.
+ */
+const Section = ({ name, children }) => (
+  <ErrorBoundary name={name}>{children}</ErrorBoundary>
+);
 
 function App() {
-  useEffect(() => startLenis(), []);
+  useEffect(() => {
+    // Smooth scrolling is an enhancement. If it cannot start, the page
+    // scrolls natively rather than failing to render at all.
+    try {
+      return startLenis();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("[lenis] could not start; native scrolling stands:", error);
+      return undefined;
+    }
+  }, []);
 
   return (
     <div>
-      <Navbar />
-      <PageFrame />
-      <ScrollPen />
-      <Header />
+      <Section name="Navbar"><Navbar /></Section>
+      <Section name="PageFrame"><PageFrame /></Section>
+      <Section name="SectionCover"><SectionCover /></Section>
+      <Section name="Header"><Header /></Section>
       <main>
         {/* Experience leads: it is the evidence, and the tooling sections
             read as one run rather than a repeat split in two. */}
-        <Experience />
+        <Section name="Experience"><Experience /></Section>
 
-        <Skills />
+        <Section name="Skills"><Skills /></Section>
 
-        {/* Technologies sticks at the top while Projects slides up over it.
-            The dwell between them is the scroll the strip travels through
-            before it gets covered. */}
-        <div className="stack">
-          <CircularCarousel />
-          <div className="stack__dwell" aria-hidden="true" />
-          <Projects />
-        </div>
+        {/* Both ordinary sections now. Technologies used to stick at the top
+            while Projects rode up over it, with 2400px of dwell between them
+            for the strip to travel through — a quarter of the page's length
+            spent showing ten items a few at a time. The strip is a grid, so
+            there is nothing left to travel and nothing to hold it for. */}
+        <Section name="Technologies"><CircularCarousel /></Section>
 
-        <ContactMe />
+        <Section name="Projects"><Projects /></Section>
+
+        <Section name="ContactMe"><ContactMe /></Section>
       </main>
-      <Footer />
+      <Section name="Footer"><Footer /></Section>
 
-      <GoToTop />
+      <Section name="GoToTop"><GoToTop /></Section>
     </div>
   );
 }
