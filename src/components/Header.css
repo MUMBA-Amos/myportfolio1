@@ -58,6 +58,23 @@
   clip-path: inset(calc(100% - var(--screen) + var(--wipe, 0px)) 0 0 0);
 }
 
+/* The dimming the wipe applies, as a sheet laid over the hero rather than
+   a filter on it. filter: brightness() forces the whole subtree into an
+   offscreen buffer before it can be applied — and this subtree holds the
+   newspaper and the note, each carrying its own feTurbulence, so every
+   frame of the wipe re-ran both filters and re-rasterised a full screen.
+   Opacity on a flat colour is composited instead, and costs nothing per
+   frame. Inside .header, so the clip-path above takes it too. */
+.header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background-color: #0a0a0a;
+  opacity: var(--dim, 0);
+  pointer-events: none;
+}
+
 /* Hero content styling */
 .hero-content {
   text-align: left; /* Aligns text to the left */
