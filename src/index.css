@@ -149,3 +149,18 @@ code {
     height: 0;
   }
 }
+
+/* TEMPORARY, for isolating a scroll performance problem — see index.js.
+   ?perf=nofilter and ?perf=plain drop the turbulence from every torn edge
+   at once, so the cost can be attributed without a deploy per experiment.
+   Remove once the culprit is known. */
+.perf-nofilter .newspaper::before,
+.perf-nofilter .note::before,
+.perf-nofilter .xp-row::before,
+.perf-nofilter .skills-sheet::before,
+.perf-plain .newspaper::before,
+.perf-plain .note::before,
+.perf-plain .xp-row::before,
+.perf-plain .skills-sheet::before {
+  filter: none;
+}
