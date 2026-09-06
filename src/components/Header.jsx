@@ -258,10 +258,18 @@ const Header = () => {
             // animated; where it lands on the hero is worked out in CSS,
             // measured off the screen rather than off the hero, which is
             // taller than the screen and mostly above the top of it.
-            { "--wipe": "0px", filter: "brightness(1)" },
+            //
+            // The dimming rides an overlay's opacity rather than
+            // filter: brightness() on the hero. A filter rasterises the
+            // whole subtree into a buffer first, and this subtree holds two
+            // sheets carrying their own feTurbulence — so the old version
+            // re-ran both SVG filters and re-rasterised a full screen on
+            // every frame of the wipe. That was the lag on this transition.
+            { "--wipe": "0px", "--dim": 0 },
             {
               "--wipe": () => window.innerHeight + "px",
-              filter: "brightness(0.78)",
+              // What brightness(0.78) came to: a 22% darkening
+              "--dim": 0.22,
               ease: "none",
               // Nothing is written until the reader is in the range
               immediateRender: false,
@@ -270,8 +278,10 @@ const Header = () => {
           )
           .fromTo(
             next,
-            { filter: "brightness(1.12)" },
-            { filter: "brightness(1)", ease: "none", immediateRender: false },
+            // Likewise: brightness(1.12) was a 12% lift, carried here by a
+            // white overlay that fades out as the sheet comes off.
+            { "--lift": 0.11 },
+            { "--lift": 0, ease: "none", immediateRender: false },
             0
           );
       }

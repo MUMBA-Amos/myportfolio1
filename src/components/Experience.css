@@ -280,3 +280,14 @@
     filter: drop-shadow(4px 6px 10px rgba(27, 30, 12, 0.26));
   }
 }
+
+/* Driven by --lift from Header.jsx during the hero wipe; see the note on
+   the overlay in Experience.jsx. */
+.xp-lift {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background-color: #ffffff;
+  opacity: var(--lift, 0);
+  pointer-events: none;
+}
