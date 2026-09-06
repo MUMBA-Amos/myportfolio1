@@ -178,20 +178,21 @@
   z-index: 1;
 }
 
-/* Stage for the slideshow: frames stack, only one visible at a time */
-.skills-panel {
-  position: relative;
-  min-height: 32rem;
-}
-
+/* All four groups, one after another. These used to stack on top of each
+   other inside a fixed 32rem box, with a scrubbed timeline swapping one for
+   the next — which meant three of the four were visibility:hidden at any
+   moment, and so missing from find-in-page and from screen readers. They
+   are a list now, and the box is as tall as they are. */
+.skills-panel,
 .skills-groups {
   position: relative;
-  min-height: 32rem;
 }
 
-.skills-group {
-  position: absolute;
-  inset: 0;
+/* Ruled apart, since they are consecutive rather than overlaid */
+.skills-group + .skills-group {
+  margin-top: 1.75rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule);
 }
 
 /* Frame number, so the sequence reads as steps */
@@ -289,25 +290,6 @@
 
   .skills-layout {
     gap: 1.5rem;
-  }
-
-  /* Both were sized to hold the tallest frame while they overlapped */
-  .skills-panel,
-  .skills-groups {
-    min-height: 0;
-  }
-
-  /* Out of the stack and back into the flow */
-  .skills-group {
-    position: static;
-    inset: auto;
-  }
-
-  /* They are a list now, so they need ruling apart */
-  .skills-group + .skills-group {
-    margin-top: 1.75rem;
-    padding-top: 1.75rem;
-    border-top: 1px solid var(--rule);
   }
 }
 

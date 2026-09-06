@@ -8,15 +8,6 @@ gsap.registerPlugin(ScrollTrigger);
 // Height of the fixed navbar, so sections don't land underneath it
 const NAV_OFFSET = -72;
 
-/** Scroll distance the Skills slideshow spends on each frame. */
-export const SKILLS_FRAME_SCROLL = 520;
-
-/** Total pinned length of the Skills section, measured from the DOM. */
-export function skillsPinLength() {
-  const frames = document.querySelectorAll(".skills-group").length || 1;
-  return frames * SKILLS_FRAME_SCROLL;
-}
-
 
 let lenis = null;
 

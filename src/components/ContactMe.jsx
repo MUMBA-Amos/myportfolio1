@@ -33,9 +33,13 @@ const ContactMe = () => {
         return;
       }
 
+      // opacity rather than autoAlpha: autoAlpha also sets
+      // visibility: hidden, which kept the email address, the phone number
+      // and the form labels out of find-in-page and out of the
+      // accessibility tree until this section had been scrolled to.
       gsap.from(".contact__field, .contact__detail", {
         y: 20,
-        autoAlpha: 0,
+        opacity: 0,
         duration: 0.45,
         ease: "power2.out",
         stagger: 0.06,

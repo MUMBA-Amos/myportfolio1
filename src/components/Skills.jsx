@@ -1,11 +1,5 @@
 import React, { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-import { SKILLS_FRAME_SCROLL } from "../lib/scroll";
 import "./Skills.css";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const groups = [
   {
@@ -68,67 +62,26 @@ const groups = [
   },
 ];
 
+/**
+ * All four groups, on the page, at once.
+ *
+ * This used to be a slideshow: the section pinned, the four groups stacked
+ * on top of each other, and each one swapped for the next as you scrolled
+ * through. It read well and it cost too much. Three groups were hidden at
+ * any moment with `autoAlpha: 0` — which is `visibility: hidden`, so they
+ * were absent from the accessibility tree and from find-in-page. Someone
+ * searching the page for "Kubernetes" or "React Native" found nothing, and
+ * a screen reader was told about a quarter of the section.
+ *
+ * The list is also what a reader most wants to skim. Stepping them through
+ * it one frame at a time, holding the page pinned while they did, put an
+ * animation between an evaluator and the thing they came to check.
+ *
+ * So: no pin, no timeline, no hidden state. The groups render as a list and
+ * the section is as tall as its content. Nothing here needs GSAP now.
+ */
 const Skills = () => {
   const rootRef = useRef(null);
-
-  useGSAP(
-    () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        return;
-      }
-
-      const frames = gsap.utils.toArray(".skills-group");
-      if (!frames.length) return;
-
-      // Only where a frame fits a screenful. A phone cannot hold one of
-      // these groups in the height a pin gives it, so below 768px the
-      // section is not pinned and the frames stack and scroll in normal
-      // flow instead (see the phone block in Skills.css). The hide below
-      // has to sit inside the query with the timeline that undoes it, or
-      // the frames would be set to autoAlpha 0 on a phone and nothing
-      // would ever bring them back.
-      const mm = gsap.matchMedia();
-
-      mm.add("(min-width: 768px)", () => {
-      // A slideshow: each scroll step swaps one frame for the next, rather
-      // than stacking them up. The pin holds the section while you step
-      // through, then releases to the next section.
-      gsap.set(frames, { autoAlpha: 0, y: 26 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: rootRef.current,
-          start: "top top",
-          end: () => "+=" + frames.length * SKILLS_FRAME_SCROLL,
-          pin: true,
-          scrub: 0.5,
-          invalidateOnRefresh: true,
-          // Pins change page height; higher priority refreshes earlier, so
-          // triggers further down measure against the settled layout.
-          refreshPriority: 3,
-        },
-      });
-
-      const hold = 2; // timeline units each frame stays up
-
-      frames.forEach((frame, i) => {
-        const at = i * hold;
-
-        tl.to(frame, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, at);
-
-        // Every frame but the last steps aside for the one after it
-        if (i < frames.length - 1) {
-          tl.to(
-            frame,
-            { autoAlpha: 0, y: -26, duration: 0.5, ease: "power2.in" },
-            at + hold - 0.5
-          );
-        }
-      });
-      });
-    },
-    { scope: rootRef }
-  );
 
   return (
     <section id="skills" ref={rootRef} className="skills-section">

@@ -24,22 +24,12 @@ const stats = [
   { figure: "30+", label: "Technologies Used" },
 ];
 
-// How long the hero holds while the papers fold, in pixels of scroll
-const HOLD = 700;
-
 // Scroll the wipe spends taking the hero off the section underneath it
 const WIPE = 640;
 
 // The section the hero is pulled off to uncover: whatever comes first below
 // it, which is Experience
 const NEXT = ".xp";
-
-// Each sheet's crease reaches this fraction of its short side: about half
-// the sheet, which is as far as a page turns down before it wants creasing
-const sheets = [
-  { el: ".newspaper", reach: 0.5 },
-  { el: ".note", reach: 0.45 },
-];
 
 const roles = [
   "Developer",
@@ -62,6 +52,11 @@ const Header = () => {
   const actionsRef = useRef(null);
 
   const { contextSafe } = useGSAP(() => {
+    // Timers that put the hero back on screen if an animation fails to.
+    // Collected so a remount cancels them rather than leaving them to fire
+    // against elements that no longer exist.
+    const revealGuards = [];
+
     // mask:"chars" wraps each character so it can rise out of its own clip
     const split = new SplitText(nameRef.current, {
       type: "chars",
@@ -132,6 +127,26 @@ const Header = () => {
           { y: 30, rotation: -7, scale: 0.95, autoAlpha: 0, duration: 0.7 },
           "-=0.45"
         );
+
+      // A backstop for the sheets, and only for the sheets.
+      //
+      // Every `from` above starts by hiding its target, so from the moment
+      // this runs the hero's whole contents are invisible and stay that way
+      // until the timeline lands. Anything that stops it in between — a
+      // plugin that failed to register, an error thrown in a callback, a
+      // tween killed by a context revert — leaves a visitor looking at an
+      // empty first screen and concluding the site is broken. The text, the
+      // CV link and the contact row are all inside those sheets.
+      //
+      // Deliberately not applied below the fold: content that waits until
+      // it is scrolled to is correct there, and forcing it visible would
+      // break the sequences it belongs to. The hero is the one place where
+      // hidden and broken look identical to someone who has just arrived.
+      const landed = window.setTimeout(() => {
+        gsap.set([".newspaper", ".note", ".ipod"], { autoAlpha: 1 });
+      }, 2600);
+
+      revealGuards.push(landed);
     }
 
     // Leaving the hero is one held movement rather than a scroll: the hero
@@ -188,51 +203,6 @@ const Header = () => {
           // partway down the page, where no toggle ever fires.
           onToggle: markCut,
           onRefresh: markCut,
-        });
-
-        // The crease's full size, measured off each sheet so it keeps its
-        // 45 degrees whatever the viewport does to the layout. Set as a
-        // plain property rather than animated: width and height are layout,
-        // and scrubbing them relaid out both sheets and repainted their
-        // gradients on every frame. The scrub below moves only the scale.
-        const sizeFolds = () => {
-          sheets.forEach(({ el, reach }) => {
-            const node = document.querySelector(el);
-            if (!node) return;
-            const box = node.getBoundingClientRect();
-            node.style.setProperty(
-              "--fold-base",
-              Math.min(box.width, box.height) * reach + "px"
-            );
-          });
-        };
-
-        sizeFolds();
-
-        // The fold runs over the first stretch of the hold. Only the scale
-        // is animated: the crease and the turned-back corner are both drawn
-        // from it in CSS, so they cannot drift apart.
-        const fold = gsap.timeline({
-          scrollTrigger: {
-            trigger: ".header",
-            start: "bottom bottom",
-            end: "+=" + HOLD,
-            scrub: 0.6,
-            invalidateOnRefresh: true,
-            refreshPriority: 5,
-            // Re-measured before positions are worked out, so a resize
-            // rebuilds the crease at the sheet's new size
-            onRefreshInit: sizeFolds,
-          },
-        });
-
-        sheets.forEach(({ el }, i) => {
-          fold.to(
-            el,
-            { "--fold-scale": 1, ease: "none", duration: 1 },
-            // Slight offset so the two sheets do not move as one slab
-            i * 0.12
-          );
         });
 
         if (!next) return;
@@ -311,8 +281,11 @@ const Header = () => {
         .to({}, { duration: 1.5 });
     });
 
-    // SplitText rewrites the DOM, and matchMedia owns the pin: undo both
+    // SplitText rewrites the DOM, and matchMedia owns the pin: undo both.
+    // The reveal guards go too, or a remount leaves timers pointed at
+    // sheets that are no longer on the page.
     return () => {
+      revealGuards.forEach(window.clearTimeout);
       mm.revert();
       split.revert();
     };
@@ -460,7 +433,6 @@ const Header = () => {
                 </div>
               </div>
 
-              <span className="paper-fold" aria-hidden="true" />
             </div>
 
             <div className="hero-side">
@@ -507,7 +479,6 @@ const Header = () => {
                 ))}
               </ul>
 
-              <span className="paper-fold" aria-hidden="true" />
             </aside>
 
             <IpodPlayer />

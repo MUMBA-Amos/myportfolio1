@@ -158,60 +158,10 @@
   min-width: 13rem;
 }
 
-/* ── Diagonal corner fold, driven by ScrollTrigger in Header.jsx ──
-   --fold is how far the crease reaches along each edge from the sheet's
-   corner: 0 leaves the sheet whole, larger values fold more of it back.
-
-   One element paints both halves of the fold. Its background runs corner to
-   corner with a hard stop at the midpoint, so the split lands exactly on the
-   square's diagonal: the near half is the flap folded back over the sheet,
-   the far half is page colour, which erases the corner underneath. Sharing
-   one box is what keeps the crease and the cut from drifting apart.
-
-   --tear is how far each sheet's torn ::before backing reaches past the
-   border box, so the fold's corner sits on the paper rather than in the air.
-   --over pads the mask outward to swallow the sheet's drop shadow; it grows
-   the box on both axes at once, so the diagonal does not move. It is a
-   fraction of --fold rather than a fixed length, so at rest the box
-   collapses to nothing instead of leaving a nub in the corner. */
-.newspaper,
-.note {
-  /* Set once per sheet from JS and re-set on refresh, never animated: the
-     scrub moves --fold-scale alone. */
-  --fold-base: 0px;
-  --fold-scale: 0;
-  --over: calc(var(--fold-base) * 0.07);
-}
-
-.paper-fold {
-  position: absolute;
-  display: block;
-  right: calc((var(--tear) + var(--over)) * -1);
-  bottom: calc((var(--tear) + var(--over)) * -1);
-  z-index: 2;
-  /* Drawn at full size and scaled down to nothing, rather than grown from
-     nothing. Width and height are layout, and --fold drove them plus the
-     two offsets above, so the crease used to force a relayout and a
-     gradient repaint on both sheets every frame of the scrub. A scale is
-     composited, and from the bottom-right corner it grows exactly the way
-     the box used to. At full fold the geometry is identical; at rest the
-     scale collapses it completely, which is what --over used to be for. */
-  width: calc(var(--fold-base) + var(--over));
-  height: calc(var(--fold-base) + var(--over));
-  transform: scale(var(--fold-scale, 0));
-  transform-origin: 100% 100%;
-  background-image: linear-gradient(
-    to bottom right,
-    /* Flap: lit at the tip, shading into the crease. Opaque, so the text
-       it is folded over does not read through it. */
-    #fbf6e6 0%,
-    var(--fold-paper) 40%,
-    #a98d5c 49.9%,
-    /* Cut: page colour, so the corner reads as folded away */
-    var(--hero-bg) 50%
-  );
-  pointer-events: none;
-}
+/* The scroll-driven corner fold used to live here. It was the last thing on
+   the page doing layout work per scroll frame, and it turned back a corner
+   of the sheet the reader was still reading. Gone with the timeline that
+   drove it in Header.jsx. */
 
 /* ── Checklist note, taped to the page ─────────────────────────── */
 .note {
@@ -593,15 +543,21 @@
   letter-spacing: -0.01em;
 }
 
-/* Body copy sets small, dense and justified, in columns */
+/* Body copy in columns, set to be read rather than to look like a scan.
+   Ragged-right, not justified: at this measure justification opens rivers
+   of white space between words and needs hyphenation to close them, and
+   the result is the least readable setting on the page — which is a poor
+   place for the first paragraph anyone reads about you. Newspapers justify
+   because they are stuck with a fixed column width; this is not. */
 .hero-content .newspaper__lede {
   margin: 0;
   color: var(--paper-ink);
   font-family: var(--hero-serif);
-  font-size: 0.84rem;
-  line-height: 1.45;
-  text-align: justify;
-  hyphens: auto;
+  /* Was 0.84rem — about 13px, small for running text */
+  font-size: 0.92rem;
+  line-height: 1.5;
+  text-align: left;
+  hyphens: manual;
 }
 
 .hero-content .newspaper__lede::first-letter {
@@ -620,11 +576,9 @@
   }
 }
 
-@media (min-width: 1400px) {
-  .hero-content .newspaper__lede {
-    column-count: 3;
-  }
-}
+/* Two columns is the ceiling. A third took the measure down to roughly 25
+   characters a line, which is short enough that a ragged right edge reads
+   as damage rather than as setting. */
 
 /* Pull quote, boxed the way the reference sets it */
 .newspaper__quote {
