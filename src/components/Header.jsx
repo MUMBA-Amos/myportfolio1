@@ -56,7 +56,7 @@ const sections = [
   { to: "contactSection", label: "Contact" },
 ];
 
-const Header = ({ contactRef }) => {
+const Header = () => {
   const roleRef = useRef(null);
   const nameRef = useRef(null);
   const actionsRef = useRef(null);
@@ -336,10 +336,6 @@ const Header = ({ contactRef }) => {
       onComplete: () => pieces.forEach((piece) => piece.remove()),
     });
   });
-
-  const scrollToContact = () => {
-    contactRef.current.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <header id="home" className="header d-flex">
