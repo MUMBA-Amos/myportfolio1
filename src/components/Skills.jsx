@@ -1,67 +1,185 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import React, { useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { SKILLS_FRAME_SCROLL } from "../lib/scroll";
+import "./Skills.css";
 
-const skills = [
-  { name: "PHP", level: 90 },
-  { name: "BOOTSTRAP", level: 75 },
-  { name: "HTML5", level: 85 },
-  { name: "SQL", level: 80 },
-  { name: "PYTHON", level: 60 },
-  { name: "C#", level: 30 },
-  { name: "C+", level: 30 },
-  { name: "C", level: 30 },
+gsap.registerPlugin(ScrollTrigger);
+
+const groups = [
+  {
+    name: "Languages & Frameworks",
+    blurb:
+      "Full-stack work across four production codebases: Next.js patient and clinic portals sitting on a FastAPI service, a Vue and Nuxt event platform, a React and TypeScript grant management system, and two React Native apps shipped to the App Store and Google Play.",
+    skills: [
+      "Python",
+      "TypeScript",
+      "JavaScript",
+      "Go",
+      "SQL",
+      "HTML/CSS",
+      "FastAPI",
+      "React.js",
+      "Next.js",
+      "Vue.js",
+      "Nuxt.js",
+      "Node.js",
+      "Express",
+      "React Native",
+    ],
+  },
+  {
+    name: "Cloud & DevOps",
+    blurb:
+      "Ran a four-node EKS cluster in production as sole engineer, with auto-scaling and ALB ingress. Infrastructure written in Terraform with remote state, so the environment rebuilds from code rather than by hand, and delivery through ArgoCD and GitHub Actions from committed manifests.",
+    skills: [
+      "AWS (EKS, S3, ALB)",
+      "Kubernetes",
+      "Docker",
+      "Podman",
+      "Terraform",
+      "ArgoCD",
+      "GitHub Actions",
+      "CI/CD",
+      "Linux",
+    ],
+  },
+  {
+    name: "AI & Machine Learning",
+    blurb:
+      "Built a two-store RAG layer on pgvector giving each generated report patient-scoped retrieval over prior analyses. Used GPT-4o vision to pull structured biomarkers out of scanned lab reports, cutting turnaround by around 80%, with retrieval kept fail-soft so embedding errors degrade output instead of blocking it.",
+    skills: [
+      "RAG",
+      "Vector search (pgvector)",
+      "Embeddings",
+      "Prompt engineering",
+      "LLM integration",
+      "TensorFlow",
+      "OpenAI GPT-4o / GPT-5 API",
+      "KNIME Analytics",
+    ],
+  },
+  {
+    name: "Databases",
+    blurb:
+      "Postgres underneath everything: Supabase for auth and data sync across mobile and web, pgvector for embedding search inside the same database, and DigitalOcean managed instances behind the research platform.",
+    skills: ["PostgreSQL", "Supabase", "DigitalOcean managed DBs"],
+  },
 ];
 
 const Skills = () => {
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
+  const rootRef = useRef(null);
+
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+
+      const frames = gsap.utils.toArray(".skills-group");
+      if (!frames.length) return;
+
+      // A slideshow: each scroll step swaps one frame for the next, rather
+      // than stacking them up. The pin holds the section while you step
+      // through, then releases to the next section.
+      gsap.set(frames, { autoAlpha: 0, y: 26 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: "top top",
+          end: () => "+=" + frames.length * SKILLS_FRAME_SCROLL,
+          pin: true,
+          scrub: 0.5,
+          invalidateOnRefresh: true,
+          // Pins change page height; higher priority refreshes earlier, so
+          // triggers further down measure against the settled layout.
+          refreshPriority: 3,
+        },
+      });
+
+      const hold = 2; // timeline units each frame stays up
+
+      frames.forEach((frame, i) => {
+        const at = i * hold;
+
+        tl.to(frame, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, at);
+
+        // Every frame but the last steps aside for the one after it
+        if (i < frames.length - 1) {
+          tl.to(
+            frame,
+            { autoAlpha: 0, y: -26, duration: 0.5, ease: "power2.in" },
+            at + hold - 0.5
+          );
+        }
+      });
+    },
+    { scope: rootRef }
+  );
 
   return (
-    <section
-      className="skills-section py-5 text-white"
-      ref={ref}
-      style={{ backgroundColor: "#0a0a0a" }}
-    >
-      <div className="container">
-        <h2 className="text-center text-success mb-3">Skills</h2>
-        <p className="text-center mb-5">
-          With a strong background in web development and design, I have honed a
-          diverse set of skills that allow me to craft visually appealing and
-          functional websites. Below are some of the key skills that I have
-          developed over the years, ranging from front-end technologies to
-          content management systems.
-        </p>
-        <div className="row">
-          {skills.map((skill, index) => (
-            <div key={index} className="col-lg-6 col-md-6 mb-4">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: inView ? `${skill.level}%` : "0%" }}
-                transition={{ duration: 1, delay: index * 0.2 }}
-              >
-                <h5 className="d-flex justify-content-between">
-                  <span>{skill.name}</span>
-                  <span>{skill.level}%</span>
-                </h5>
-                <div
-                  className="progress"
-                  style={{ height: "10px", backgroundColor: "#333" }}
-                >
-                  <div
-                    className="progress-bar bg-success"
-                    role="progressbar"
-                    style={{ width: `${skill.level}%` }}
-                    aria-valuenow={skill.level}
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  />
+    <section id="skills" ref={rootRef} className="skills-section">
+      {/* Darkens this section to Technologies' ground as the pen dives, so
+          the two sections meet grey on grey. Bounded by the section itself,
+          so there is no edge to line up and nothing to leave behind. */}
+      <div className="skills-cover" aria-hidden="true" />
+      <div className="container skills-layout">
+        <header className="section-head">
+          <span className="section-head__kicker">Capabilities</span>
+          <h2 className="section-head__title">Skills</h2>
+          <p className="section-head__standfirst">
+            Full-stack and platform engineering, across AI services, cloud
+            infrastructure, web and mobile.
+          </p>
+        </header>
+
+        <div className="skills-sheet">
+          {/* Its own tear pattern, so it doesn't match the hero sheet exactly */}
+          <svg className="skills-sheet__defs" aria-hidden="true" focusable="false">
+            <defs>
+              <filter id="skillsTorn">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.03 0.05"
+                  numOctaves="3"
+                  seed="11"
+                  result="noise"
+                />
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="noise"
+                  scale="8"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
+                />
+              </filter>
+            </defs>
+          </svg>
+
+          <div className="skills-panel">
+            <div className="skills-groups">
+              {groups.map((group, index) => (
+                <div className="skills-group" key={group.name}>
+                  <span className="skills-group__count">
+                    {String(index + 1).padStart(2, "0")} /{" "}
+                    {String(groups.length).padStart(2, "0")}
+                  </span>
+                  <h3 className="skills-group__name">{group.name}</h3>
+                  <p className="skills-group__blurb">{group.blurb}</p>
+                  <span className="skills-group__label">Tools</span>
+                  <ul className="skills-group__list">
+                    {group.skills.map((skill) => (
+                      <li className="skill-item" key={skill}>
+                        {skill}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </motion.div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>

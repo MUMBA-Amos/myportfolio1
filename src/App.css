@@ -39,8 +39,14 @@
 
 body,
 html {
-  background-color: #000; /* Set the background color to black */
-  color: #fff; /* Optional: Set the text color to white */
+  /* The page ground, showing wherever a section does not reach: outside the
+     drawing frame, and past the last section. It was black, which is what
+     made the edges of the site read as a different page. */
+  background-color: var(--hero-bg);
+  background-image: var(--paper-grain);
+  background-repeat: repeat;
+  background-size: var(--paper-grain-size) var(--paper-grain-size);
+  color: var(--hero-ink);
   margin: 0;
   padding: 0;
   height: 100%;

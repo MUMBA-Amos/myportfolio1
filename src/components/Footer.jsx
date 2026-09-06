@@ -1,19 +1,22 @@
 import React from "react";
+import "./Footer.css";
 
-const Footer = () => {
-  return (
-    <footer
-      style={{
-        backgroundColor: "#000000",
-        color: "#ffffff",
-        padding: "20px 0",
-      }}
-    >
-      <div className="container text-center">
-        <p>© 2024 My Portfolio. All rights reserved.</p>
-      </div>
-    </footer>
-  );
-};
+/**
+ * Colophon rather than a copyright bar: the last rule on the page, with the
+ * few facts a reader might still want after the contact form.
+ */
+const Footer = () => (
+  <footer className="colophon">
+    <div className="container colophon__inner">
+      <span className="colophon__name">Mumba Amos Ntambo</span>
+      <span className="colophon__role">
+        Frontend &amp; full-stack engineer — Kuala Lumpur
+      </span>
+      <span className="colophon__year">
+        &copy; {new Date().getFullYear()}
+      </span>
+    </div>
+  </footer>
+);
 
 export default Footer;

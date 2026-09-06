@@ -1,14 +1,139 @@
+/* Type system: one face per role */
+:root {
+  --display-serif: "Newsreader", Georgia, "Times New Roman", serif;
+  /* Closest free stand-in for BT Grotesk */
+  --grotesk: "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+  /* Technical labels: figures, datelines, metadata */
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --body-sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+
+  /* Paper stock and olive ink, shared by the hero and Skills */
+  --hero-bg: #f5f5ef;
+  /* Paper grain over that colour, so the surface reads as stock rather than
+     flat fill. A generated tile rather than an SVG filter: feTurbulence puts
+     noise in the alpha channel as well as the colour channels, so it tints
+     the paper as much as it textures it, and its strength cannot be measured
+     from a screenshot.
+
+     The tile is smooth value noise on an 82-cell lattice, wrapped so it is
+     seamless, scaled to a spread of ~1.7 levels around the colour above, and
+     drawn at half size for retina. Generated, not photographed: a real paper
+     photo is orders of magnitude stronger and would fight the newsprint. */
+  --paper-grain: url("./assets/paper-grain.png");
+  --paper-grain-size: 124px; /* 248px tile at 2x */
+  --hero-ink: #1b1e0c;
+  --hero-ink-muted: rgba(27, 30, 12, 0.72);
+  --hero-ink-soft: rgba(27, 30, 12, 0.28);
+  /* Ground for the Technologies section, and for the cover that darkens the
+     section before it so the two meet grey on grey. A warm graphite, not a
+     neutral black: it stays in the paper and ink family instead of reading
+     as a panel borrowed from another site. */
+  --tech-bg: #55554e;
+  /* The one saturated colour on the site. Warm enough to belong beside the
+     newsprint and olive ink, and spent only where it earns attention: the
+     technology logos, and the store links that make the app claims
+     checkable. */
+  --accent: #d2693f;
+  /* The same accent taken darker, for links on the light grounds. At #d2693f
+     a link reads 3.3:1 on paper and 2.6:1 on the tan clippings, under the
+     4.5:1 small text needs; this is 5.9:1 and 4.6:1. The lighter value stays
+     for the logos, which sit on graphite and are shapes rather than text. */
+  --accent-ink: #9c4322;
+  --hero-accent: #3f4a15;
+
+  /* Page gutter, shared so full-bleed elements can cancel it */
+  --gutter: clamp(1.5rem, 5vw, 5rem);
+  /* Inset of the drawing frame; anything that should align to it uses this */
+  --frame-inset: 16px;
+
+  /* One screenful, in one place: the sections that mean "as tall as the
+     screen" measure against this rather than repeating the pair below. */
+  --screen: 100vh;
+}
+
+
+
+/* Small viewport height where it is understood: on phones it excludes the
+   browser chrome that comes and goes, which vh does not. */
+@supports (height: 100svh) {
+  :root {
+    --screen: 100svh;
+  }
+}
+
+/* One face per level: display for h1, editorial serif for h2 and h3,
+   and a text grotesque for body copy. */
+h1 {
+  font-family: var(--grotesk);
+}
+
+h2,
+h3 {
+  font-family: var(--display-serif);
+}
+
+p,
+li,
+label,
+input,
+textarea,
+button {
+  font-family: var(--body-sans);
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: var(--body-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: var(--mono);
+}
+
+/* Bootstrap's .container caps at 1140px and centres the page in a narrow
+   column. Run full width instead, with a gutter so content isn't jammed
+   against the screen edge. Navbar and hero share this, so they stay aligned. */
+.container,
+.container-fluid {
+  max-width: 100%;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+
+/* ── Sticky stack: Technologies, then Projects sliding up over it ──
+   Both panels share this containing block, which is what lets the first one
+   stay stuck while the second travels over it. The dwell between them is
+   plain scroll: nothing is drawn there, so what the reader sees during it is
+   Technologies, still stuck, with its strip travelling. */
+.stack {
+  position: relative;
+}
+
+/* Scroll length Technologies holds for before Projects starts covering it.
+   The strip's travel is mapped onto exactly this range. */
+.stack__dwell {
+  height: 2400px;
+}
+
+/* Shorter on a phone. The strip itself is shorter there (narrower cells in
+   a narrower viewport), and scroll is dearer on a thumb than on a wheel, so
+   the same run of cells is given less page to travel through. */
+@media (max-width: 767px) {
+  .stack__dwell {
+    height: 1800px;
+  }
+}
+
+/* No dwell under reduced motion: the travel tween does not run at all
+   there, so the height would only hold the section still with nothing
+   happening. The strip is scrolled by hand in that case instead. Last, so
+   it wins over the phone height above. */
+@media (prefers-reduced-motion: reduce) {
+  .stack__dwell {
+    height: 0;
+  }
 }

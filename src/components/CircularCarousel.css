@@ -1,0 +1,212 @@
+/* Technologies: a specification strip on graphite. The page's drawing
+   furniture inverted — paper rules over a dark ground instead of ink over a
+   light one. */
+.tech-section {
+  /* Paper inks, so the section is the same drawing seen from the other side */
+  --tech-ink: #f5f5ef;
+  --tech-ink-muted: rgba(245, 245, 239, 0.62);
+  --tech-rule: rgba(245, 245, 239, 0.26);
+  --tech-tick: rgba(245, 245, 239, 0.34);
+
+  /* Sticks at the top of the viewport while the dwell below it scrolls, then
+     stays put while Projects rides up over it. This replaces a GSAP pin: a
+     pin and a sticky both want to control the same element's position, and
+     the sticky version is what lets a later sibling overlap it. */
+  position: sticky;
+  top: 0;
+  height: var(--screen);
+
+  display: flex;
+  /* Anchored high rather than centred. The section is uncovered from its top
+     edge downward, so centred content sat behind a screenful of empty
+     padding and only surfaced once the section had almost finished rising —
+     which is why the list needed extra scrolling to turn up. */
+  align-items: flex-start;
+  padding: 15vh 0 60px;
+  /* Shared with .skills-cover, which darkens the section before this one
+     to the same value so the two meet grey on grey */
+  background-color: var(--tech-bg);
+  /* Two layers over the ground. Registration crosses first, sparse enough to
+     read as marks rather than a grid — the strip already carries a rule top
+     and bottom, a divider per cell and ruler ticks under the head, so ruled
+     lines here would only give lines crossing lines. The mark is the one
+     from the frame's corners, so it already means something on this page.
+
+     Then grain, the same generated tile as the paper sections but re-based
+     on this ground: every other surface on the site carries it, and without
+     it this was the one flat fill on the page. */
+  background-image:
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='168' height='168'><path d='M84 77.5v13M77.5 84h13' stroke='%23f5f5ef' stroke-width='1' opacity='0.42'/></svg>"),
+    url("../assets/graphite-grain.png");
+  background-size: 168px 168px, 124px 124px;
+  background-repeat: repeat, repeat;
+  color: var(--tech-ink);
+  /* The strip runs past both edges while it travels */
+  overflow: hidden;
+}
+
+.tech-inner {
+  width: 100%;
+}
+
+/* ── Section head ──────────────────────────────────────────────── */
+.tech-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  /* The rule spans to the drawing frame like the strip's own rules, while
+     the text is inset by the cell padding, so the title lines up with the
+     first cell's contents rather than touching the frame. */
+  margin: 0 var(--frame-inset) 2.6rem;
+  padding: 0 2rem 0.9rem;
+  /* Rule under the head, with ruler ticks hanging beneath it */
+  background-image:
+    linear-gradient(var(--tech-rule), var(--tech-rule)),
+    repeating-linear-gradient(
+      to right,
+      var(--tech-tick) 0 1px,
+      transparent 1px 12px
+    );
+  background-size: 100% 1px, 100% 5px;
+  background-position: left bottom, left bottom;
+  background-repeat: no-repeat;
+}
+
+.tech-head__title {
+  margin: 0;
+  font-family: var(--display-serif);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.tech-head__meta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tech-ink-muted);
+}
+
+/* ── The travelling strip ──────────────────────────────────────── */
+.tech-viewport {
+  overflow: hidden;
+}
+
+.tech-track {
+  display: flex;
+  /* Sized by its cells, not by the viewport, so it can overflow and travel */
+  width: max-content;
+  /* Rules top and bottom run the whole length of the strip, so the cells
+     read as one ruled sheet rather than separate cards */
+  background-image:
+    linear-gradient(var(--tech-rule), var(--tech-rule)),
+    linear-gradient(var(--tech-rule), var(--tech-rule));
+  background-size: 100% 1px, 100% 1px;
+  background-position: left top, left bottom;
+  background-repeat: no-repeat;
+  will-change: transform;
+}
+
+/* Each cell is ruled on its left, the way the navbar cells and the stats
+   grid are; the strip's own rules close the top and bottom. */
+.tech-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  width: clamp(18rem, 30vw, 26rem);
+  padding: 2.4rem 2rem 2.6rem;
+  background-image: linear-gradient(var(--tech-rule), var(--tech-rule));
+  background-size: 1px 100%;
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+
+/* The first cell starts at the frame, with no rule doubling its edge */
+.tech-cell:first-child {
+  margin-left: var(--frame-inset);
+  background-image: none;
+}
+
+.tech-cell__index {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: var(--tech-ink-muted);
+}
+
+.tech-cell__icon {
+  display: block;
+  font-size: 1.6rem;
+  line-height: 1;
+  /* react-icons draw with currentColor, so this colours the glyph. No
+     opacity damping here: it would mute the accent back toward the ground. */
+  color: var(--accent);
+}
+
+.tech-cell__name {
+  margin: 0.2rem 0 0;
+  font-family: var(--display-serif);
+  font-size: 1.45rem;
+  font-weight: 500;
+}
+
+.tech-cell__desc {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--body-sans);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--tech-ink-muted);
+}
+
+.tech-cell__field {
+  margin-top: auto;
+  padding-top: 1.4rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tech-ink-muted);
+}
+
+/* Without the pin there is nothing driving the strip sideways, so let it
+   scroll by hand instead of hiding the cells past the edge. */
+/* ── Below the stack breakpoint ────────────────────────────────────
+   The dwell collapses to no height there (.stack__dwell in index.css), so
+   the strip has no scroll range to be driven through and the travel tween
+   is switched off to match. The viewport scrolls itself instead: the strip
+   is swiped by hand, snapping so a flick lands on a cell rather than
+   between two. Lenis leaves touch input alone, so this is not fighting it
+   for the gesture. */
+/* The one case where the strip is not driven by the page scroll: reduced
+   motion, where the travel tween does not run and the dwell has no height
+   (see .stack__dwell in index.css). The viewport scrolls itself there, and
+   keeps its scrollbar, since that is the only thing saying it can be.
+   Everywhere else the strip travels with the page and stays overflow
+   hidden. */
+@media (prefers-reduced-motion: reduce) {
+  .tech-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* A flick carried past either end stays in the strip rather than
+       turning into a page scroll or a back-navigation swipe */
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    scrollbar-color: var(--tech-rule) transparent;
+  }
+
+  .tech-cell {
+    scroll-snap-align: start;
+  }
+
+  /* So the last cell can clear the right edge rather than ending flush
+     against it, the way the first one is inset from the left */
+  .tech-track {
+    padding-right: var(--frame-inset);
+  }
+}

@@ -1,0 +1,184 @@
+/* Contact: the last paper section, in the same ruled language as the rest.
+   Fields are ruled lines rather than boxes — the page is drawn with
+   hairlines, and bordered inputs would read as a form bolted onto it. */
+.contact {
+  --ink: var(--hero-ink);
+  --ink-muted: var(--hero-ink-muted);
+  --rule: var(--hero-ink-soft);
+
+  position: relative;
+  padding: 5.5rem 0 6rem;
+  background-color: var(--hero-bg);
+  background-image: var(--paper-grain);
+  background-repeat: repeat;
+  background-size: var(--paper-grain-size) var(--paper-grain-size);
+  color: var(--ink);
+}
+
+.contact > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hairline across the top with ruler ticks, matching the other sections */
+.contact::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 6px;
+  background-image:
+    linear-gradient(var(--rule), var(--rule)),
+    repeating-linear-gradient(
+      to right,
+      rgba(27, 30, 12, 0.34) 0 1px,
+      transparent 1px 12px
+    );
+  background-size: 100% 1px, 100% 5px;
+  background-position: left top, left top;
+  background-repeat: no-repeat;
+}
+
+.contact__head {
+  margin-bottom: 3rem;
+}
+
+.contact__kicker {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.contact__title {
+  margin: 0;
+  font-family: var(--display-serif);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.contact__grid {
+  display: grid;
+  gap: 3rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .contact__grid {
+    grid-template-columns: 18rem minmax(0, 1fr);
+    gap: 4rem;
+  }
+}
+
+/* ── Direct details: reachable without filling anything in ─────── */
+.contact__detail {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.contact__detail:first-child {
+  border-top: 1px solid var(--ink);
+}
+
+.contact__detail-label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.contact__detail-value {
+  font-family: var(--body-sans);
+  font-size: 0.98rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a.contact__detail-value:hover,
+a.contact__detail-value:focus-visible {
+  color: var(--accent-ink);
+}
+
+/* ── Form ──────────────────────────────────────────────────────── */
+.contact__field {
+  margin-bottom: 1.6rem;
+}
+
+.contact__label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.contact__optional {
+  text-transform: none;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+
+.contact__input {
+  width: 100%;
+  padding: 0.55rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  background-color: transparent;
+  color: var(--ink);
+  font-family: var(--body-sans);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.contact__input:hover {
+  border-bottom-color: var(--hero-ink-muted);
+}
+
+.contact__input:focus {
+  outline: none;
+  border-bottom-color: var(--accent-ink);
+}
+
+.contact__input--area {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.contact__send {
+  padding: 0.7rem 1.6rem;
+  border: 1px solid var(--accent-ink);
+  background-color: transparent;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.contact__send:hover,
+.contact__send:focus-visible {
+  background-color: var(--accent-ink);
+  color: var(--hero-bg);
+}
+
+/* Says what the button does before it is pressed */
+.contact__hint {
+  margin: 0.8rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}

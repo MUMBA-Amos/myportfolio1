@@ -1,25 +1,61 @@
 /* Header and general styling */
 .header {
-  background-color: #0a0a0a;
-  padding: 60px 0; /* Adjust this as needed */
-  color: white;
-  min-height: 100vh;
+  --hero-serif: var(--display-serif);
+
+  position: relative;
+  /* Above the section below it. While the hero is held at its bottom edge
+     the next section travels up underneath it, and paint order is DOM order
+     between siblings that do not ask for anything else: without this the
+     section arriving later would cross over the hero instead of passing
+     behind it, and there would be nothing to uncover. Kept under the pen,
+     which threads over the hero. */
+  z-index: 2;
+  overflow: hidden;
+  background-color: var(--hero-bg);
+  background-image: var(--paper-grain);
+  background-repeat: repeat;
+  background-size: var(--paper-grain-size) var(--paper-grain-size);
+  /* Top padding clears the fixed navbar. The bottom is exactly the frame
+     inset, so when the hero pins at its bottom edge the stats grid's lower
+     rule lands on the frame's bottom rule rather than floating above it. */
+  padding: 72px 0 var(--frame-inset);
+  color: var(--hero-ink);
+  min-height: var(--screen);
   margin: 0; /* Ensure there's no margin */
+
+  /* On a screen taller than the hero, min-height leaves slack. Centring it
+     would split that slack above and below, putting the empty band back
+     under the stats grid, so the element carries no align-items-center:
+     Bootstrap's utilities are !important and cannot be overridden here. */
+  align-items: stretch;
 }
 
-/* Navbar styling */
-.navbar-brand {
-  font-size: 1.5rem;
-  font-weight: bold;
+.header > .container {
+  /* Above the ruled guide lines behind the hero */
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  /* Two children: the hero content and the stats grid. space-between hands
+     any slack to the space between them, so the grid stays on the frame's
+     bottom rule. The grid keeps its own margin-top as the minimum gap, and
+     on a short screen there is no slack and this is a no-op. */
+  justify-content: space-between;
 }
 
-.navbar-nav .nav-link {
-  margin-left: 15px;
-  color: rgba(255, 255, 255, 0.7);
-}
 
-.navbar-nav .nav-link:hover {
-  color: #00ff9d;
+
+/* ── The wipe that takes the held hero off the section below it ──
+   Driven by --wipe from Header.jsx, and carried by a class the hero keeps
+   from the start of the hold until it is scrolled back above it. 100% is
+   the hero's own height, so 100% - one screen is the part of it already
+   above the top of the screen and never on show; --wipe then carries the
+   cut the rest of the way down the screen, and holds it there afterwards,
+   which is what keeps the finished hero off the section below. Written this
+   way, a value left behind by a scrub cannot crop the hero back up the
+   page, where the class is gone. */
+.header--cut {
+  clip-path: inset(calc(100% - var(--screen) + var(--wipe, 0px)) 0 0 0);
 }
 
 /* Hero content styling */
@@ -28,55 +64,730 @@
 }
 
 .hero-content h1 {
-  font-size: 3.5rem;
-  font-weight: 700;
-  text-align: left; /* Ensures the heading is left-aligned */
+  font-family: var(--grotesk);
+  font-size: clamp(2rem, 5.4vw, 4.6rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  /* The photo used to hold the right of this row; with the title alone
+     across the full width it is centred instead of hanging off the left. */
+  text-align: center;
 }
 
-.hero-content h1 span {
-  color: #00ff9d;
+.hero-content h1 {
+  color: var(--hero-ink-muted);
+}
+
+.hero-greeting {
+  display: block;
+  margin-bottom: 0.3em;
+  color: rgba(27, 30, 12, 0.5);
+  font-size: 0.3em;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hero-content h1 .hero-name {
+  position: relative;
+  display: block;
+  /* Shrink-wrapped so the underline sits under the name and not the row,
+     so it needs the auto margins to sit centred. */
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  color: rgba(27, 30, 12, 0.74);
+  white-space: nowrap;
+}
+
+/* Keep the content above the background layers */
+.header > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Split characters need to sit on their own line box to rise cleanly */
+.hero-name__text {
+  display: inline-block;
+}
+
+/* Split characters need to sit on their own line box to rise cleanly */
+.hero-name__text {
+  display: inline-block;
 }
 
 .hero-content p {
+  color: var(--hero-ink-muted);
   font-size: 1.2rem;
-  margin-top: 15px;
-  max-width: 600px;
-  margin: 0;
+  margin: 15px 0 0;
   text-align: left; /* Ensures the paragraph is left-aligned */
 }
 
-/* Button styling */
-.btn-success {
-  background-color: #00ff9d;
-  border-color: #00ff9d;
-  color: #000;
-  font-weight: bold;
+/* Sheet and index sit side by side, wrapping on narrow screens */
+.hero-sheets {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
 }
 
-/* Hero stats styling */
-.hero-stats h2 {
-  font-size: 2.5rem;
+/* Sidebar column: note stacked over the player */
+.hero-side {
+  display: flex;
+  flex: 0 1 15rem;
+  flex-direction: column;
+  gap: 2.2rem;
+  min-width: 13rem;
+}
+
+/* ── Diagonal corner fold, driven by ScrollTrigger in Header.jsx ──
+   --fold is how far the crease reaches along each edge from the sheet's
+   corner: 0 leaves the sheet whole, larger values fold more of it back.
+
+   One element paints both halves of the fold. Its background runs corner to
+   corner with a hard stop at the midpoint, so the split lands exactly on the
+   square's diagonal: the near half is the flap folded back over the sheet,
+   the far half is page colour, which erases the corner underneath. Sharing
+   one box is what keeps the crease and the cut from drifting apart.
+
+   --tear is how far each sheet's torn ::before backing reaches past the
+   border box, so the fold's corner sits on the paper rather than in the air.
+   --over pads the mask outward to swallow the sheet's drop shadow; it grows
+   the box on both axes at once, so the diagonal does not move. It is a
+   fraction of --fold rather than a fixed length, so at rest the box
+   collapses to nothing instead of leaving a nub in the corner. */
+.newspaper,
+.note {
+  --fold: 0px;
+  --over: calc(var(--fold) * 0.07);
+}
+
+.paper-fold {
+  position: absolute;
+  display: block;
+  right: calc((var(--tear) + var(--over)) * -1);
+  bottom: calc((var(--tear) + var(--over)) * -1);
+  z-index: 2;
+  width: calc(var(--fold) + var(--over));
+  height: calc(var(--fold) + var(--over));
+  background-image: linear-gradient(
+    to bottom right,
+    /* Flap: lit at the tip, shading into the crease. Opaque, so the text
+       it is folded over does not read through it. */
+    #fbf6e6 0%,
+    var(--fold-paper) 40%,
+    #a98d5c 49.9%,
+    /* Cut: page colour, so the corner reads as folded away */
+    var(--hero-bg) 50%
+  );
+  pointer-events: none;
+}
+
+/* ── Checklist note, taped to the page ─────────────────────────── */
+.note {
+  /* Same aged newsprint stock as the sheet */
+  --note-paper: #e6d9b8;
+  --note-ink: #33291a;
+  --fold-paper: #ddceab;
+  --tear: 11px;
+
+  position: relative;
+  margin-top: 2.6rem;
+  padding: 1.6rem 1.3rem 1.4rem;
+  transform: rotate(-2.2deg);
+}
+
+.note__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* The paper, chipped at the edges; text stays unfiltered above it */
+.note::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  background-color: var(--note-paper);
+  /* Ruled lines, like a torn-off notepad page */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 1.55rem,
+    rgba(51, 41, 26, 0.22) 1.55rem calc(1.55rem + 1px)
+  );
+  background-position: 0 1.4rem;
+  filter: url(#chippedEdge) drop-shadow(3px 5px 10px rgba(27, 30, 12, 0.28));
+}
+
+.note > *:not(.note__defs):not(.paper-fold) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Strip of tape holding it down */
+.note__tape {
+  position: absolute;
+  top: -0.7rem;
+  left: 50%;
+  width: 5rem;
+  height: 1.4rem;
+  background-color: rgba(252, 249, 235, 0.5);
+  border-left: 1px solid rgba(255, 255, 255, 0.7);
+  border-right: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 1px 3px rgba(27, 30, 12, 0.18);
+  transform: translateX(-50%) rotate(-3.5deg);
+}
+
+.note__title {
+  margin: 0 0 0.7rem;
+  color: var(--note-ink);
+  font-family: "Caveat", "Segoe Script", cursive;
+  font-size: 1.5rem;
   font-weight: 700;
+  line-height: 1.1;
 }
 
-.hero-stats p {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1rem;
+.note__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.note__link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+  color: var(--note-ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.note__label {
+  font-family: "Caveat", "Segoe Script", cursive;
+  font-size: 1.28rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Hand-drawn box, ticked on hover */
+.note__box {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--note-ink);
+  border-radius: 2px;
+}
+
+.note__link:hover .note__box::after,
+.note__link:focus-visible .note__box::after {
+  content: "";
+  position: absolute;
+  top: -22%;
+  left: 22%;
+  width: 42%;
+  height: 88%;
+  border-right: 2.5px solid var(--note-ink);
+  border-bottom: 2.5px solid var(--note-ink);
+  transform: rotate(40deg);
+}
+
+.note__link:hover .note__label,
+.note__link:focus-visible .note__label {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note {
+    transform: none;
+  }
+}
+
+/* ── iPod on the desk ──────────────────────────────────────────── */
+.ipod {
+  --ipod-body: #efeee6;
+  --ipod-edge: rgba(27, 30, 12, 0.25);
+  --lcd: #cbd6a6;
+  --lcd-ink: #2c3a17;
+
+  align-self: center;
+  width: 11.5rem;
+  padding: 0.75rem 0.75rem 1rem;
+  border: 1px solid var(--ipod-edge);
+  border-radius: 0.9rem;
+  background-image: linear-gradient(160deg, #fbfbf6, var(--ipod-body) 55%, #dcdcd2);
+  box-shadow: 3px 6px 16px rgba(27, 30, 12, 0.28);
+  transform: rotate(1.6deg);
+}
+
+/* Screen */
+.ipod__screen {
+  padding: 0.5rem 0.55rem 0.6rem;
+  border-radius: 0.3rem;
+  background-color: var(--lcd);
+  box-shadow: inset 0 1px 4px rgba(27, 30, 12, 0.35);
+  color: var(--lcd-ink);
+  font-family: var(--hero-serif);
+}
+
+.ipod__status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+
+/* Battery pip */
+.ipod__battery {
+  width: 1.1rem;
+  height: 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 1px;
+  background-image: linear-gradient(
+    to right,
+    currentColor 0 60%,
+    transparent 60% 100%
+  );
+}
+
+.ipod__track {
+  margin: 0.45rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.ipod__artist {
+  margin: 0.1rem 0 0.5rem;
+  font-size: 0.68rem;
+  opacity: 0.72;
+}
+
+.ipod__bar {
+  height: 0.3rem;
+  border: 1px solid rgba(44, 58, 23, 0.5);
+  border-radius: 1px;
+}
+
+.ipod__bar-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background-color: rgba(44, 58, 23, 0.6);
+}
+
+/* Click wheel */
+.ipod__wheel {
+  position: relative;
+  width: 7.6rem;
+  height: 7.6rem;
+  margin: 0.9rem auto 0;
+  border-radius: 50%;
+  background-image: radial-gradient(circle at 50% 35%, #f4f4ee, #dededa 70%);
+  box-shadow: inset 0 1px 3px rgba(27, 30, 12, 0.25);
+}
+
+.ipod__key {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(44, 58, 23, 0.7);
+  font-family: var(--hero-serif);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ipod__key:hover,
+.ipod__key:focus-visible {
+  color: var(--lcd-ink);
+}
+
+.ipod__key--menu {
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ipod__key--prev {
+  top: 50%;
+  left: 0.55rem;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+}
+
+.ipod__key--next {
+  top: 50%;
+  right: 0.55rem;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+}
+
+.ipod__key--play {
+  bottom: 0.45rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+}
+
+.ipod__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.9rem;
+  height: 2.9rem;
+  margin: -1.45rem 0 0 -1.45rem;
+  border: 1px solid var(--ipod-edge);
+  border-radius: 50%;
+  background-image: radial-gradient(circle at 50% 35%, #fdfdf9, #e6e6df);
+  cursor: pointer;
+}
+
+.ipod__center:hover {
+  background-image: radial-gradient(circle at 50% 35%, #ffffff, #dededa);
+}
+
+.ipod :focus-visible {
+  outline: 2px solid var(--hero-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ipod {
+    transform: none;
+  }
+}
+
+/* ── Newsprint sheet ───────────────────────────────────────────── */
+.newspaper {
+  /* Aged newsprint: tanned stock, warm brown-black ink */
+  --paper: #e6d9b8;
+  --paper-ink: #33291a;
+  --fold-paper: #ddceab;
+  --tear: 16px;
+
+  position: relative;
+  /* A sheet, not a full-bleed panel — keep it to a readable measure */
+  flex: 1 1 24rem;
+  max-width: 40rem;
+  margin-top: 1.6rem;
+  padding: 1.5rem 1.7rem 1.8rem;
+  color: var(--paper-ink);
+}
+
+.newspaper__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* The paper itself, torn at the edges and tanned toward the corners */
+.newspaper::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(
+      120% 90% at 45% 35%,
+      rgba(255, 252, 240, 0.55),
+      rgba(255, 252, 240, 0) 62%
+    ),
+    radial-gradient(
+      95% 95% at 100% 100%,
+      rgba(126, 92, 40, 0.3),
+      rgba(126, 92, 40, 0) 58%
+    ),
+    radial-gradient(
+      80% 80% at 0% 0%,
+      rgba(126, 92, 40, 0.22),
+      rgba(126, 92, 40, 0) 55%
+    );
+  filter: url(#tornEdge) drop-shadow(5px 6px 0 rgba(27, 30, 12, 0.45));
+}
+
+/* Content rides above the torn backing */
+.newspaper > *:not(.newspaper__defs):not(.paper-fold) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Banner, set between the heavy rules a front page uses */
+.newspaper__banner {
+  margin: 0;
+  padding: 0.3rem 0;
+  border-top: 3px solid var(--paper-ink);
+  border-bottom: 3px solid var(--paper-ink);
+  color: var(--paper-ink);
+  font-family: var(--hero-serif);
+  font-size: clamp(1.35rem, 3.4vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.14em;
   text-align: center;
+  text-transform: uppercase;
+}
+
+/* Dateline row carries the cycling role */
+.newspaper__dateline {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--paper-ink);
+  font-family: var(--hero-serif);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.newspaper__folio {
+  opacity: 0.7;
+}
+
+.newspaper__headline {
+  margin: 0.85rem 0 0.6rem;
+  color: var(--paper-ink);
+  font-family: var(--hero-serif);
+  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Body copy sets small, dense and justified, in columns */
+.hero-content .newspaper__lede {
+  margin: 0;
+  color: var(--paper-ink);
+  font-family: var(--hero-serif);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.hero-content .newspaper__lede::first-letter {
+  float: left;
+  padding: 0.05em 0.09em 0 0;
+  font-size: 3.1em;
+  font-weight: 700;
+  line-height: 0.78;
+}
+
+@media (min-width: 768px) {
+  .hero-content .newspaper__lede {
+    column-count: 2;
+    column-gap: 1.5rem;
+    column-rule: 1px solid rgba(51, 41, 26, 0.35);
+  }
+}
+
+@media (min-width: 1400px) {
+  .hero-content .newspaper__lede {
+    column-count: 3;
+  }
+}
+
+/* Pull quote, boxed the way the reference sets it */
+.newspaper__quote {
+  margin: 1.1rem 0 0;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--paper-ink);
+  border-top-width: 3px;
+  border-bottom-width: 3px;
+  color: var(--paper-ink);
+  font-family: var(--hero-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  text-align: center;
+}
+
+/* Button styling */
+.hero-cv {
+  background-color: var(--hero-ink);
+  border: 1px solid var(--hero-ink);
+  border-radius: 0;
+  font-family: var(--hero-serif);
+  letter-spacing: 0.01em;
+  color: var(--hero-bg);
+  font-weight: bold;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.hero-cv:hover,
+.hero-cv:focus-visible {
+  background-color: transparent;
+  color: var(--hero-ink);
+}
+
+/* ── Figures grid ──────────────────────────────────────────────── */
+.figures {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Both rows the same height, so the rules drawn at 50% below land on the
+     boundary between them even when a label in one row wraps and the other
+     does not. */
+  grid-auto-rows: 1fr;
+  margin-top: 3rem;
+
+  /* The frame and dividers are drawn as background gradients rather than
+     borders. Borders and box-shadow do not paint on this element, but
+     backgrounds do, so this is what actually renders. */
+  background-image: linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%231b1e0c' stroke-width='1'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%231b1e0c' stroke-width='1'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%231b1e0c' stroke-width='1'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%231b1e0c' stroke-width='1'/></svg>");
+  background-size: 100% 2px, 100% 2px, 2px 100%, 2px 100%, 2px 50%,
+    100% 2px, auto, auto, auto, auto;
+  background-position: left top, left bottom, left top, right top,
+    center top, left center, left top, right top, left bottom, right bottom;
+  background-repeat: no-repeat;
+}
+
+/* Ruler ticks hanging under the top rule */
+.figures::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 0;
+  left: 0;
+  height: 6px;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(27, 30, 12, 0.55) 0 1px,
+    transparent 1px 11px
+  );
+}
+
+/* Three cells over two columns: the last one takes the whole second row
+   rather than leaving a hole beside it. */
+.figures__cell:last-child {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 768px) {
+  .figures {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    /* Full bleed out to the drawing frame. The container holds everything
+       else at the gutter, so the grid is pulled back by the difference and
+       its outer rules land on the frame, like the rule under the navbar.
+       Only above 768px, where the frame is drawn at all. */
+    margin-right: calc((var(--gutter) - var(--frame-inset)) * -1);
+    margin-left: calc((var(--gutter) - var(--frame-inset)) * -1);
+    /* frame + two dividers at the third points */
+    background-image: linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), linear-gradient(rgba(27, 30, 12, 0.22), rgba(27, 30, 12, 0.22)), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%231b1e0c' stroke-width='1'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%231b1e0c' stroke-width='1'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%231b1e0c' stroke-width='1'/></svg>"), url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13'><path d='M6.5 0v13M0 6.5h13' stroke='%231b1e0c' stroke-width='1'/></svg>");
+    background-size: 100% 2px, 100% 2px, 2px 100%, 2px 100%, 2px 100%,
+      2px 100%, auto, auto, auto, auto;
+    background-position: left top, left bottom, left top, right top,
+      33.333% top, 66.667% top, left top, right top, left bottom,
+      right bottom;
+  }
+
+  /* Three columns, so the last cell is back in the run */
+  .figures__cell:last-child {
+    grid-column: auto;
+  }
+}
+
+.figures__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.9rem 1.4rem 1.6rem;
+}
+
+.figures__figure {
+  color: rgba(27, 30, 12, 0.74);
+  font-family: var(--hero-serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.figures__label {
+  color: rgba(27, 30, 12, 0.5);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 /* Media queries for responsiveness */
 @media (max-width: 768px) {
+  /* The name is one unbroken line, so the type has to track the viewport
+     rather than sit at a fixed size: at 2.5rem it is wider than the column
+     on a phone, and centred it would be cut off at both ends. */
   .hero-content h1 {
-    font-size: 2.5rem;
-  }
-  .hero-stats {
-    flex-direction: column;
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
   }
 }
 
-.hero-stats div {
-  text-align: center;
+/* Confetti pieces are appended here, so it anchors their coordinates */
+.hero-actions {
+  position: relative;
+}
+
+/* Footer strip of the sheet: ruled off, inked like the rest of the paper */
+.newspaper .hero-actions {
+  gap: 0.9rem;
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--paper-ink);
+}
+
+.newspaper .hero-cv {
+  background-color: var(--paper-ink);
+  border-color: var(--paper-ink);
+  color: var(--paper);
+  font-size: 0.72rem;
+  padding: 0.45rem 1.1rem;
+}
+
+.newspaper .hero-cv:hover,
+.newspaper .hero-cv:focus-visible {
+  background-color: transparent;
+  color: var(--paper-ink);
+}
+
+.newspaper .social-icons {
+  gap: 0.85rem;
+  margin: 0;
+}
+
+.newspaper .icon {
+  height: auto;
+  margin-left: 0;
+  color: var(--paper-ink);
+  font-size: 1.1rem;
+  opacity: 0.75;
+}
+
+.newspaper .icon:hover,
+.newspaper .icon:focus-visible {
+  color: var(--paper-ink);
+  opacity: 1;
+}
+
+.hero-spark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  pointer-events: none;
+  will-change: transform;
 }
 
 /* Social icons styling */
@@ -86,15 +797,16 @@
 }
 
 .icon {
-  color: white;
+  color: var(--hero-ink-muted);
   font-size: 1.5rem;
   margin-left: 15px; /* Adjust space between icons */
   transition: color 0.3s ease;
   height: 38px; /* Match height to the Download CV button */
 }
 
-.icon:hover {
-  color: #00ff9d; /* Match the hover color with the green theme */
+.icon:hover,
+.icon:focus-visible {
+  color: var(--hero-ink);
 }
 
 /* Additional styles */

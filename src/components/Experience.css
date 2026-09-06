@@ -1,0 +1,269 @@
+.xp {
+  --ink: #1b1e0c;
+  --rule: rgba(27, 30, 12, 0.22);
+
+  position: relative;
+  padding: 5.5rem 0 6rem;
+  background-color: var(--hero-bg);
+  background-image: var(--paper-grain);
+  background-repeat: repeat;
+  background-size: var(--paper-grain-size) var(--paper-grain-size);
+  color: var(--ink);
+}
+
+/* Hairline rules top and bottom, with ruler ticks along the top one */
+.xp::before,
+.xp::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background-color: var(--ink);
+}
+
+.xp::before {
+  top: 0;
+}
+
+.xp::after {
+  bottom: 0;
+}
+
+/* Ticks hanging off the top rule, like a measuring edge */
+.xp__head::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 7px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--rule) 0 1px,
+    transparent 1px 12px
+  );
+}
+
+.xp__head {
+  position: relative;
+  margin-bottom: 3rem;
+  padding-top: 1.6rem;
+}
+
+.xp__kicker {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.xp__title {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(2rem, 4.5vw, 3.1rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Above the ruled guide lines drawn behind the section */
+.xp > .container {
+  position: relative;
+  z-index: 1;
+}
+
+.xp__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Cards are separated by the desk showing between them, so the section
+   rules that used to divide them are gone. */
+.xp__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2.8rem;
+}
+
+/* Each role is a newsprint clipping, the same stock as the Skills sheet */
+.xp-row {
+  /* Inside the card everything switches to paper ink */
+  --paper: #e6d9b8;
+  --ink: #33291a;
+  --accent: #7a5c22;
+  --rule: rgba(51, 41, 26, 0.32);
+
+  position: relative;
+  display: grid;
+  gap: 1.25rem 2.5rem;
+  grid-template-columns: 1fr;
+  padding: 1.9rem 2rem 2rem;
+  color: var(--ink);
+}
+
+/* The paper itself, torn at the edges; text stays unfiltered above it */
+.xp-row::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(
+      115% 85% at 40% 30%,
+      rgba(255, 252, 240, 0.5),
+      rgba(255, 252, 240, 0) 60%
+    ),
+    radial-gradient(
+      90% 90% at 100% 100%,
+      rgba(126, 92, 40, 0.28),
+      rgba(126, 92, 40, 0) 56%
+    );
+  filter: url(#xpTorn) drop-shadow(4px 6px 10px rgba(27, 30, 12, 0.26));
+}
+
+/* Content rides above the torn backing */
+.xp-row > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 900px) {
+  .xp-row {
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
+
+  /* Vertical hairline between the meta column and the body */
+  .xp-row__body {
+    padding-left: 2.5rem;
+    border-left: 1px solid var(--rule);
+  }
+}
+
+.xp-row__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.xp-row__index {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.xp-row__place {
+  opacity: 0.62;
+}
+
+.xp-row__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0 0 0.35rem;
+  color: var(--ink);
+  font-size: clamp(1.3rem, 2.4vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+/* Small tag beside the job title */
+.xp-row__kind {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.xp-row__org {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+}
+
+.xp-row__org span {
+  opacity: 0.65;
+}
+
+.xp-row__points {
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.xp-row__points li {
+  position: relative;
+  padding-left: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+/* Small square marker instead of a bullet */
+.xp-row__points li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 0.36rem;
+  height: 0.36rem;
+  border: 1px solid var(--ink);
+}
+
+.xp-row__tech {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  line-height: 1.7;
+  opacity: 0.7;
+}
+
+/* Link out to the live system for each role, so the claim is checkable.
+   Uses the darker accent: on this tan stock the lighter one reads 2.6:1. */
+.xp-row__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 1rem 0 0;
+}
+
+.xp-row__link {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--accent-ink);
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.xp-row__link:hover,
+.xp-row__link:focus-visible {
+  background-color: var(--accent-ink);
+  color: var(--paper);
+}
+
+/* Says what a reader will hit before they click it */
+.xp-row__note {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(51, 41, 26, 0.6);
+}
