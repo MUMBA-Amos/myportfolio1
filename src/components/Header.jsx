@@ -3,7 +3,6 @@ import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
 import { SplitText } from "gsap/SplitText";
 import { Physics2DPlugin } from "gsap/Physics2DPlugin";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import {
   FaPhone,
@@ -16,20 +15,13 @@ import { scrollToSection } from "../lib/scroll";
 import IpodPlayer from "./IpodPlayer";
 import DrawnLines from "./DrawnLines";
 
-gsap.registerPlugin(TextPlugin, SplitText, Physics2DPlugin, ScrollTrigger);
+gsap.registerPlugin(TextPlugin, SplitText, Physics2DPlugin);
 
 const stats = [
   { figure: "3", label: "Years Experience" },
   { figure: "8", label: "Projects Completed" },
   { figure: "30+", label: "Technologies Used" },
 ];
-
-// Scroll the wipe spends taking the hero off the section underneath it
-const WIPE = 640;
-
-// The section the hero is pulled off to uncover: whatever comes first below
-// it, which is Experience
-const NEXT = ".xp";
 
 const roles = [
   "Developer",
@@ -149,124 +141,15 @@ const Header = () => {
       revealGuards.push(landed);
     }
 
-    // Leaving the hero is one held movement rather than a scroll: the hero
-    // stops at its bottom edge, the sheets fold, and then the hero itself is
-    // cut away from the top edge down, uncovering the section beneath it.
-    //
-    // What makes the uncovering work is that the hold takes no pin spacing.
-    // The page keeps flowing behind the held hero, so the section below
-    // travels up under it while it is stopped — one screen of travel, which
-    // is exactly what it takes to go from the bottom edge of the screen to
-    // the top. It then holds still there for the length of the wipe, so what
-    // the cut uncovers is a settled page, not one still moving.
-    const mm = gsap.matchMedia();
+    // The hero used to leave in one held movement: it pinned at its bottom
+    // edge, the section below travelled up behind it, and the hero was then
+    // cut away from the top edge down with an animated clip-path while it
+    // dimmed. It read well and it pinned two sections to do it — the hero
+    // for a screen plus the wipe, Experience for the wipe — which is a lot
+    // of a reader's scroll spent not moving down the page. It is also where
+    // the lag was reported. The hero is an ordinary section now and
+    // Experience follows it.
 
-    mm.add(
-      "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-      () => {
-        const next = document.querySelector(NEXT);
-        const hero = document.querySelector(".header");
-
-        // Anywhere at or past the start of the hold, the hero is under the
-        // cut; above it, it is a whole sheet. Read off the scroll rather
-        // than the trigger's progress, which is not settled yet at the
-        // point a refresh asks.
-        const markCut = (self) =>
-          hero.classList.toggle("header--cut", self.scroll() >= self.start);
-
-        // Holds from the hero's bottom edge, not its top: the hero is taller
-        // than the viewport, so pinning at the top would hold the half of it
-        // nobody has read yet.
-        ScrollTrigger.create({
-          trigger: ".header",
-          start: "bottom bottom",
-          end: () => "+=" + (window.innerHeight + WIPE),
-          pin: true,
-          // Measured on every refresh, since it is a screen height
-          invalidateOnRefresh: true,
-          // No spacer: this is what lets the next section come up behind the
-          // hero instead of waiting below the hold.
-          pinSpacing: false,
-          // Topmost pin on the page, so it is measured first and the ones
-          // below it are laid out against a settled page
-          refreshPriority: 5,
-          // Marks the hero from the moment the hold starts and leaves it
-          // marked afterwards. With no pin spacing the hero is left lying
-          // over the section below it once the hold is done, so the cut has
-          // to stay on it — uncut it would paint straight over that
-          // section. Only scrolling back above the hold makes it a whole
-          // sheet again, and off the class nothing reads --wipe, so a value
-          // left behind by a scrub cannot crop it up there.
-          //
-          // Both callbacks run the same check, on the same trigger: the
-          // toggle covers arriving and leaving, the refresh covers landing
-          // partway down the page, where no toggle ever fires.
-          onToggle: markCut,
-          onRefresh: markCut,
-        });
-
-        if (!next) return;
-
-        // The uncovered section stands still while the hero comes off it.
-        ScrollTrigger.create({
-          trigger: next,
-          start: "top top",
-          end: "+=" + WIPE,
-          pin: true,
-          invalidateOnRefresh: true,
-          // Below the hero's pin, above the ones further down the page
-          refreshPriority: 4,
-        });
-
-        // The cut: the hero's top edge travels down over it and the hero
-        // dims as it goes, so the sheet reads as being taken off the page
-        // rather than fading. The section under it comes in a shade hot, as
-        // if it had been lit through the sheet that was covering it.
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: next,
-              start: "top top",
-              end: "+=" + WIPE,
-              scrub: 0.4,
-              invalidateOnRefresh: true,
-              refreshPriority: 4,
-            },
-          })
-          .fromTo(
-            ".header",
-            // How far the wipe has travelled down the screen. Only this is
-            // animated; where it lands on the hero is worked out in CSS,
-            // measured off the screen rather than off the hero, which is
-            // taller than the screen and mostly above the top of it.
-            //
-            // The dimming rides an overlay's opacity rather than
-            // filter: brightness() on the hero. A filter rasterises the
-            // whole subtree into a buffer first, and this subtree holds two
-            // sheets carrying their own feTurbulence — so the old version
-            // re-ran both SVG filters and re-rasterised a full screen on
-            // every frame of the wipe. That was the lag on this transition.
-            { "--wipe": "0px", "--dim": 0 },
-            {
-              "--wipe": () => window.innerHeight + "px",
-              // What brightness(0.78) came to: a 22% darkening
-              "--dim": 0.22,
-              ease: "none",
-              // Nothing is written until the reader is in the range
-              immediateRender: false,
-            },
-            0
-          )
-          .fromTo(
-            next,
-            // Likewise: brightness(1.12) was a 12% lift, carried here by a
-            // white overlay that fades out as the sheet comes off.
-            { "--lift": 0.11 },
-            { "--lift": 0, ease: "none", immediateRender: false },
-            0
-          );
-      }
-    );
 
     // Role tagline picks up once the entrance has landed
     const rolesTl = gsap.timeline({ repeat: -1, delay: 1.6 });
@@ -281,12 +164,11 @@ const Header = () => {
         .to({}, { duration: 1.5 });
     });
 
-    // SplitText rewrites the DOM, and matchMedia owns the pin: undo both.
-    // The reveal guards go too, or a remount leaves timers pointed at
-    // sheets that are no longer on the page.
+    // SplitText rewrites the DOM, so that has to be undone. The reveal
+    // guards go too, or a remount leaves timers pointed at sheets that are
+    // no longer on the page.
     return () => {
       revealGuards.forEach(window.clearTimeout);
-      mm.revert();
       split.revert();
     };
   });

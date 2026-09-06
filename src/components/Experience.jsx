@@ -81,11 +81,6 @@ const Experience = () => {
 
   return (
     <section id="experience" ref={rootRef} className="xp">
-      {/* Lit through the sheet coming off above it. A real element because
-          .xp::before and ::after are both spoken for, and an overlay
-          because filter: brightness() on the section would rasterise the
-          whole thing every frame of the wipe. */}
-      <span className="xp-lift" aria-hidden="true" />
       <DrawnLines />
       <div className="container">
         {/* Roughens the card silhouettes; one filter serves them all */}
