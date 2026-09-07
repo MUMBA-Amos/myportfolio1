@@ -45,7 +45,15 @@ const shipped = [
       "Authentication, route-guarded onboarding, data sync, subscription entitlement gating and push notifications, taken through App Store review.",
     ],
     tech: "React Native · Expo · TypeScript · Supabase · RevenueCat · EAS Build",
-    links: [{ label: "App Store", href: "https://apps.apple.com/app/pupmood" }],
+    // No country segment: apps.apple.com redirects to the visitor's own
+    // storefront. A /my/ link pins it to Malaysia and can show a region
+    // error to someone reading this from anywhere else.
+    links: [
+      {
+        label: "App Store",
+        href: "https://apps.apple.com/app/pupmood-dog-mood-tracker/id6776720786",
+      },
+    ],
   },
 ];
 
