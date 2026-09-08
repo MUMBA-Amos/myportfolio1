@@ -26,10 +26,10 @@ const shipped = [
     ],
     tech: "React Native · Expo · TypeScript · Supabase · RevenueCat · Google Maps API",
     links: [
-      { label: "App Store", href: "https://apps.apple.com/app/trainioapp" },
+      { label: "App Store", href: "https://apps.apple.com/app/workout-gym-coach-trainioapp/id6759800744" },
       {
         label: "Google Play",
-        href: "https://play.google.com/store/apps/details?id=com.trainioapp",
+        href: "https://play.google.com/store/apps/details?id=com.mumba.trainio",
       },
     ],
   },
