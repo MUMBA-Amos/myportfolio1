@@ -19,6 +19,7 @@ const shipped = [
     kind: "Personal trainer and client marketplace",
     platform: "iOS and Android",
     role: "Sole developer",
+    dates: "Aug 2025 — Mar 2026",
     points: [
       "Two-sided marketplace with swipe-based discovery, real-time chat and session booking, with separate flows for trainers and clients.",
       "Profile management, certifications, earnings tracking, client leads, and a workout and diet plan builder, with Google Maps for location-based discovery.",
@@ -39,10 +40,12 @@ const shipped = [
     kind: "Dog mood tracking",
     platform: "iOS",
     role: "Sole developer",
+    dates: "Jun 2026",
     points: [
-      "Logs and analyses a dog's mood over time, with multi-dog support, streak tracking and time-of-day mood bucketing.",
-      "Animated component set with haptic and audio feedback, tuned to render smoothly across a range of devices.",
-      "Authentication, route-guarded onboarding, data sync, subscription entitlement gating and push notifications, taken through App Store review.",
+      "Logs and analyses a dog's mood over time, with multi-dog support, streak tracking, time-of-day mood bucketing, and animated UI with haptic and audio feedback.",
+      "Supabase for data sync and auth with Google and Apple Sign-In, a route-guarded onboarding flow, and RevenueCat entitlements gating multi-dog support, mood trends and AI features.",
+      "AI-powered mood summaries that turn logged entries into natural-language insights, plus push notifications and reminders.",
+      "Full release pipeline: EAS Build, App Store submission, and a marketing landing page with legal and support pages.",
     ],
     tech: "React Native · Expo · TypeScript · Supabase · RevenueCat · EAS Build",
     // No country segment: apps.apple.com redirects to the visitor's own
@@ -128,6 +131,7 @@ const Projects = () => {
                 <span className="work-card__index">{app.index}</span>
                 <span className="work-card__platform">{app.platform}</span>
                 <span className="work-card__role">{app.role}</span>
+                <span className="work-card__role">{app.dates}</span>
               </div>
 
               <div className="work-card__body">

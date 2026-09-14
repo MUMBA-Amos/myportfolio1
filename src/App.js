@@ -4,6 +4,7 @@ import Projects from './components/Projects';
 import Footer from './components/Footer';
 import Skills from "./components/Skills";
 import Experience from "./components/Experience";
+import Education from "./components/Education";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import ContactMe from './components/ContactMe';
@@ -51,6 +52,8 @@ function App() {
         {/* Experience leads: it is the evidence, and the tooling sections
             read as one run rather than a repeat split in two. */}
         <Section name="Experience"><Experience /></Section>
+
+        <Section name="Education"><Education /></Section>
 
         <Section name="Skills"><Skills /></Section>
 

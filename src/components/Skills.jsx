@@ -10,10 +10,12 @@ const groups = [
       "Python",
       "TypeScript",
       "JavaScript",
+      "PHP",
       "Go",
       "SQL",
       "HTML/CSS",
       "FastAPI",
+      "Laravel",
       "React.js",
       "Next.js",
       "Vue.js",
@@ -58,7 +60,7 @@ const groups = [
     name: "Databases",
     blurb:
       "Postgres underneath everything: Supabase for auth and data sync across mobile and web, pgvector for embedding search inside the same database, and DigitalOcean managed instances behind the research platform.",
-    skills: ["PostgreSQL", "Supabase", "DigitalOcean managed DBs"],
+    skills: ["PostgreSQL", "SQL", "Supabase", "DigitalOcean managed DBs"],
   },
 ];
 
