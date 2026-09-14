@@ -10,7 +10,7 @@ const Footer = () => (
     <div className="container colophon__inner">
       <span className="colophon__name">Mumba Amos Ntambo</span>
       <span className="colophon__role">
-        Frontend &amp; full-stack engineer — Kuala Lumpur
+        AI &amp; full-stack engineer — Kuala Lumpur
       </span>
       <span className="colophon__year">
         &copy; {new Date().getFullYear()}

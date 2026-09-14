@@ -20,9 +20,11 @@ const roles = [
     points: [
       "Built a women's health platform end to end — Next.js patient and clinic portals on a FastAPI service and Supabase Postgres, deployed on Vercel.",
       "Used GPT-4o vision to extract structured biomarker data from scanned lab reports, cutting report turnaround by around 80%.",
+      "Generated clinical narratives with GPT-5 against a strict JSON schema, with every statistic computed in code so the model narrates figures rather than producing them.",
       "Built a two-store RAG layer on pgvector giving each report patient-scoped retrieval, kept fail-soft so embedding errors degrade output rather than block it.",
+      "Built the access-control layer for a multi-tenant clinical platform: server-side token identity, clinic-scoped staff access, and medical files served only through short-lived signed URLs, designed around Malaysia's PDPA.",
     ],
-    tech: "Python · FastAPI · Next.js · GPT-4o/GPT-5 · pgvector · Supabase · Vercel",
+    tech: "Python · FastAPI · Next.js · GPT-4o/GPT-5 · pgvector · Supabase · PostgreSQL · Vercel",
   },
   {
     index: "02",
@@ -36,9 +38,11 @@ const roles = [
     points: [
       "Provisioned a four-node EKS cluster on AWS with auto-scaling and ALB ingress, running a microservices platform in production.",
       "Wrote the infrastructure in Terraform with remote state in S3, so the environment rebuilds from code rather than by hand.",
+      "Built GitOps delivery with ArgoCD and GitHub Actions, so deployments came from committed manifests rather than manual kubectl.",
+      "Containerised services with Podman and Docker so local and production builds stay identical, removing environment drift as a class of bug.",
       "Ran the platform end to end as sole engineer: cluster, pipelines, database and application code.",
     ],
-    tech: "Vue · Nuxt · Node · Go · Kubernetes · AWS EKS · Terraform · ArgoCD",
+    tech: "Vue · Nuxt · Node · Go · PostgreSQL · Docker · Podman · Kubernetes · AWS EKS · Terraform · ArgoCD · GitHub Actions",
   },
   {
     index: "03",
@@ -51,10 +55,25 @@ const roles = [
     note: "Malaysian state government research agency",
     points: [
       "Built a grant application management system with a five-person team — React and TypeScript front end, Node and Express behind it.",
+      "Built the system's initial backend in Laravel (PHP) before the project moved to Node and Express.",
       "Enabled real-time tracking of researcher profiles, publications and performance metrics across departments.",
       "Deployed on DigitalOcean with shell scripting and cron jobs for automated processing and backup.",
     ],
-    tech: "React · TypeScript · Node · Express · SQL · DigitalOcean · Linux",
+    tech: "React · TypeScript · Node · Express · Laravel · PHP · EJS · SQL · DigitalOcean · Linux",
+  },
+  {
+    index: "04",
+    title: "IT Project Intern",
+    kind: "Internship",
+    org: "Malaysian Dutch Business Council",
+    place: "Kuala Lumpur, Malaysia",
+    dates: "Sep — Dec 2021",
+    note: "Bilateral trade association for Dutch and Malaysian businesses",
+    points: [
+      "Built an invoicing feature inside the organisation's Bitrix24 CRM, working within an existing CRM/ERP system rather than a greenfield codebase.",
+      "Worked with CRM data structures, records and workflow configuration to fit the tool to how the team actually processed members and billing.",
+    ],
+    tech: "Bitrix24 CRM · PHP · SQL · HTML/CSS",
   },
 ];
 
