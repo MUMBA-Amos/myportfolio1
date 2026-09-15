@@ -27,6 +27,7 @@ const roles = [
   "Developer",
   "Web Developer",
   "AI Engineer",
+  "App Developer",
   "Full Stack Developer",
   "Frontend Developer",
   "Backend Developer",
