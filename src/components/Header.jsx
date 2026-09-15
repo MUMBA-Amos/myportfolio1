@@ -18,7 +18,7 @@ import DrawnLines from "./DrawnLines";
 gsap.registerPlugin(TextPlugin, SplitText, Physics2DPlugin);
 
 const stats = [
-  { figure: "3", label: "Years Experience" },
+  { figure: "2", label: "Years Experience" },
   { figure: "8+", label: "Projects Completed" },
   { figure: "30+", label: "Technologies Used" },
 ];
