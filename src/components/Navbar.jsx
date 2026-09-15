@@ -23,6 +23,7 @@ const DOT_HOVER =
 const links = [
   { to: "home", label: "Home" },
   { to: "experience", label: "Experience" },
+  { to: "education", label: "Education" },
   { to: "skills", label: "Skills" },
   { to: "technologies", label: "Tech" },
   { to: "projects", label: "Projects" },

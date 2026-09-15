@@ -10,6 +10,7 @@ import {
   SiVuedotjs,
   SiNodedotjs,
   SiFastapi,
+  SiLaravel,
   SiPostgresql,
   SiKubernetes,
   SiOpenai,
@@ -66,6 +67,12 @@ const technologies = [
     icon: <SiFastapi />,
     field: "Backend",
     description: "Python services for a healthcare platform.",
+  },
+  {
+    name: "Laravel",
+    icon: <SiLaravel />,
+    field: "Backend",
+    description: "The first backend of a government grant management system.",
   },
   {
     name: "PostgreSQL",
