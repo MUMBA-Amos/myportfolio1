@@ -8,8 +8,8 @@ import "./Projects.css";
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Selected work. Two tiers: the apps that are live in the stores, then the
- * builds behind them. Experience already covers the client platforms, so
+ * Selected work. Two tiers: the projects that are live, then the builds
+ * behind them. Experience already covers the client platforms, so
  * this section is the independent work rather than a second telling of it.
  */
 const shipped = [
@@ -58,23 +58,44 @@ const shipped = [
       },
     ],
   },
+  {
+    index: "03",
+    name: "FlightPulse",
+    kind: "Flight delay insights for Malaysian airports",
+    platform: "Web",
+    role: "Personal project",
+    dates: "Sep 2026 — Present",
+    points: [
+      "Medallion pipeline (bronze to silver to gold) on Databricks and Delta Lake in PySpark and Spark SQL, with history kept incremental by Delta MERGE upserts.",
+      "Two scheduled ingestion jobs: OpenSky aircraft positions every 30 minutes at roughly 12,000 aircraft per snapshot, and Aviationstack landed departures from KUL and PEN daily.",
+      "Gold insight tables modelled in Spark SQL with CTEs and window functions for punctuality by airline, hour, route and day, enforcing minimum sample sizes before ranking.",
+      "Gold tables served through a FastAPI service on AWS EC2 behind nginx, with connection pooling, result caching and rate limiting, deployed on every push by GitHub Actions.",
+    ],
+    tech: "Databricks · PySpark · Spark SQL · Delta Lake · Python · FastAPI · AWS EC2 · nginx · GitHub Actions · Angular · TypeScript",
+    links: [
+      { label: "Live site", href: "https://flightpulse-frontend.vercel.app" },
+      { label: "Pipeline", href: "https://github.com/MUMBA-Amos/flightpulse-pipeline" },
+      { label: "API", href: "https://github.com/MUMBA-Amos/flightpulse-api" },
+      { label: "Frontend", href: "https://github.com/MUMBA-Amos/flightpulse-frontend" },
+    ],
+  },
 ];
 
 const builds = [
   {
-    index: "03",
+    index: "04",
     name: "Bird species classification",
     note: "Deep learning on the CUB-200 dataset",
     tech: "Python · TensorFlow",
   },
   {
-    index: "04",
+    index: "05",
     name: "E-commerce categorisation",
     note: "NLP classifier for product taxonomies",
     tech: "Python · NLP",
   },
   {
-    index: "05",
+    index: "06",
     name: "KPI management system",
     note: "Tracking and analysing performance metrics",
     tech: "Web · SQL",
@@ -118,7 +139,8 @@ const Projects = () => {
         </header>
 
         <p className="work__lede">
-          Two apps are live in the stores; the rest are the builds behind them.
+          Two apps are live in the stores and one platform is live on the web;
+          the rest are the builds behind them.
           Client platforms are under Experience.
         </p>
 
