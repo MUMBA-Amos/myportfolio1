@@ -18,9 +18,9 @@ import DrawnLines from "./DrawnLines";
 gsap.registerPlugin(TextPlugin, SplitText, Physics2DPlugin);
 
 const stats = [
-  { figure: "2", label: "Years Experience" },
-  { figure: "8+", label: "Projects Completed" },
-  { figure: "30+", label: "Technologies Used" },
+  { figure: "3", label: "Apps in the stores" },
+  { figure: "5", label: "Roles since 2021" },
+  { figure: "2017", label: "In Malaysia since" },
 ];
 
 const roles = [
@@ -258,23 +258,26 @@ const Header = () => {
                 <span className="newspaper__role" ref={roleRef}>
                   Developer
                 </span>
-                <span className="newspaper__folio">Vol. 01 — No. 01</span>
+                <span className="newspaper__folio">Vol. 01, No. 01</span>
               </div>
 
               <h2 className="newspaper__headline">
-                On building, learning &amp; bringing ideas to life
+                Full Stack and AI Engineer, Kuala Lumpur
               </h2>
 
               <p className="newspaper__lede">
-                Hello Everyone! I love creating and building, and I’m always
-                eager to learn and grow my skills. Explore my work to see the
-                projects I’ve completed and the skills I’ve developed along the
-                way. I’m excited about new challenges and ready to bring fresh
-                ideas to life.
+                I am a full stack and AI engineer with a Computer Science
+                degree in Artificial Intelligence from Swinburne University
+                (2025). I&rsquo;ve lived in Malaysia since 2017. I build web
+                apps, mobile apps and AI features with Python, TypeScript, Go
+                and React, and I put them live myself on AWS, Docker and
+                Kubernetes. Three of my apps are live on the App Store and
+                Google Play.
               </p>
 
               <blockquote className="newspaper__quote">
-                “I love creating and building.”
+                Open to roles in Kuala Lumpur. I&rsquo;ll need Employment Pass
+                sponsorship.
               </blockquote>
 
               <div
@@ -295,22 +298,28 @@ const Header = () => {
                   View CV
                 </a>
                 <div className="social-icons ml-4">
-                  <a href="tel:+60176307134" className="icon">
+                  <a href="tel:+60176307134" className="icon" aria-label="Phone">
                     <FaPhone />
                   </a>
                   <a
-                    href="https://www.linkedin.com/in/mumba-amos-ntambo-54a665214/"
+                    href="https://linkedin.com/in/mumba-amos-ntambo-54a665214"
                     className="icon"
+                    aria-label="LinkedIn"
                   >
                     <FaLinkedin />
                   </a>
                   <a
-                    href="https://wa.me/+60176307134?text=Hello%20Mumba!"
+                    href="https://wa.me/60176307134?text=Hello%20Mumba!"
                     className="icon"
+                    aria-label="WhatsApp"
                   >
                     <FaWhatsapp />
                   </a>
-                  <a href="https://github.com" className="icon">
+                  <a
+                    href="https://github.com/MUMBA-Amos"
+                    className="icon"
+                    aria-label="GitHub"
+                  >
                     <FaGithub />
                   </a>
                 </div>

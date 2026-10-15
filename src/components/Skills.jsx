@@ -5,62 +5,61 @@ const groups = [
   {
     name: "Languages & Frameworks",
     blurb:
-      "Full-stack work across four production codebases: Next.js patient and clinic portals sitting on a FastAPI service, a Vue and Nuxt event platform, a React and TypeScript grant management system, and two React Native apps shipped to the App Store and Google Play.",
+      "Backends in FastAPI and Node.js, web front ends in React, Vue and Angular, and mobile apps in React Native. Three of my apps are live on the App Store and Google Play.",
     skills: [
       "Python",
       "TypeScript",
       "JavaScript",
-      "PHP",
       "Go",
       "SQL",
-      "HTML/CSS",
+      "PHP",
       "FastAPI",
-      "Laravel",
-      "React.js",
-      "Next.js",
-      "Vue.js",
-      "Nuxt.js",
       "Node.js",
       "Express",
+      "Laravel",
+      "React",
+      "Next.js",
+      "Vue",
+      "Nuxt",
+      "Angular",
       "React Native",
+      "Expo",
     ],
   },
   {
     name: "Cloud & DevOps",
     blurb:
-      "Ran a four-node EKS cluster in production as sole engineer, with auto-scaling and ALB ingress. Infrastructure written in Terraform with remote state, so the environment rebuilds from code rather than by hand, and delivery through ArgoCD and GitHub Actions from committed manifests.",
+      "I put my own work live. At GoAcara I set up the AWS cloud with Terraform, ran a 4-node Kubernetes cluster on EKS, and used ArgoCD and GitHub Actions so every update went live automatically.",
     skills: [
-      "AWS (EKS, S3, ALB)",
-      "Kubernetes",
+      "AWS",
       "Docker",
-      "Podman",
+      "Kubernetes",
       "Terraform",
       "ArgoCD",
       "GitHub Actions",
-      "CI/CD",
       "Linux",
+      "nginx",
     ],
   },
   {
     name: "AI & Machine Learning",
     blurb:
-      "Built a two-store RAG layer on pgvector giving each generated report patient-scoped retrieval over prior analyses. Used GPT-4o vision to pull structured biomarkers out of scanned lab reports, cutting turnaround by around 80%, with retrieval kept fail-soft so embedding errors degrade output instead of blocking it.",
+      "At Baseline I used GPT-4o to read scanned lab reports, which made reports about 80% faster, and built an AI search over each patient's past results with pgvector. At university I trained CNN and LSTM models.",
     skills: [
+      "OpenAI API",
       "RAG",
-      "Vector search (pgvector)",
-      "Embeddings",
-      "Prompt engineering",
-      "LLM integration",
+      "pgvector",
+      "LangChain",
+      "Keras",
       "TensorFlow",
-      "OpenAI GPT-4o / GPT-5 API",
-      "KNIME Analytics",
+      "scikit-learn",
     ],
   },
   {
-    name: "Databases",
+    name: "Data",
     blurb:
-      "Postgres underneath everything: Supabase for auth and data sync across mobile and web, pgvector for embedding search inside the same database, and DigitalOcean managed instances behind the research platform.",
-    skills: ["PostgreSQL", "SQL", "Supabase", "DigitalOcean managed DBs"],
+      "PostgreSQL and Supabase for app data, and Databricks with PySpark for the FlightPulse pipeline that runs every 30 minutes.",
+    skills: ["PostgreSQL", "Supabase", "Databricks", "PySpark"],
   },
 ];
 
@@ -96,8 +95,8 @@ const Skills = () => {
           <span className="section-head__kicker">Capabilities</span>
           <h2 className="section-head__title">Skills</h2>
           <p className="section-head__standfirst">
-            Full-stack and platform engineering, across AI services, cloud
-            infrastructure, web and mobile.
+            Web apps, mobile apps and AI features, and the cloud setup to put
+            them live.
           </p>
         </header>
 

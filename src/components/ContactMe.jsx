@@ -13,7 +13,12 @@ const details = [
   {
     label: "LinkedIn",
     value: "mumba-amos-ntambo",
-    href: "https://www.linkedin.com/in/mumba-amos-ntambo-54a665214/",
+    href: "https://linkedin.com/in/mumba-amos-ntambo-54a665214",
+  },
+  {
+    label: "GitHub",
+    value: "MUMBA-Amos",
+    href: "https://github.com/MUMBA-Amos",
   },
   { label: "Location", value: "Kuala Lumpur, Malaysia" },
 ];

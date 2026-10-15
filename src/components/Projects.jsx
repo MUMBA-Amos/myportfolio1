@@ -8,26 +8,45 @@ import "./Projects.css";
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Selected work. Two tiers: the projects that are live, then the builds
- * behind them. Experience already covers the client platforms, so
- * this section is the independent work rather than a second telling of it.
+ * Selected work. Two tiers: the apps that are live, then the university
+ * builds. Experience covers the jobs, so this section is the apps rather
+ * than a second telling of them.
  */
 const shipped = [
   {
     index: "01",
-    name: "Trainioapp",
-    kind: "Personal trainer and client marketplace",
+    name: "MYBaseline Cycle Intelligence",
+    kind: "Cycle tracking app built for a healthcare client",
     platform: "iOS and Android",
-    role: "Sole developer",
-    dates: "Aug 2025 — Mar 2026",
+    role: "Client app",
+    dates: "2026",
     points: [
-      "Two-sided marketplace with swipe-based discovery, real-time chat and session booking, with separate flows for trainers and clients.",
-      "Profile management, certifications, earnings tracking, client leads, and a workout and diet plan builder, with Google Maps for location-based discovery.",
-      "Subscription billing with gated features, published as signed builds to both stores.",
+      "Period, symptom and mood logging, cycle predictions and written insight reports.",
+      "Subscriptions through RevenueCat.",
     ],
-    tech: "React Native · Expo · TypeScript · Supabase · RevenueCat · Google Maps API",
     links: [
-      { label: "App Store", href: "https://apps.apple.com/app/workout-gym-coach-trainioapp/id6759800744" },
+      {
+        label: "App Store",
+        href: "https://apps.apple.com/my/app/mybaseline-cycle-intelligence/id6810966307",
+      },
+      {
+        label: "Google Play",
+        href: "https://play.google.com/store/apps/details?id=com.baselinemycycle.app",
+      },
+    ],
+  },
+  {
+    index: "02",
+    name: "Trainio",
+    kind: "Connects clients with personal trainers",
+    platform: "iOS and Android",
+    dates: "2025 to 2026",
+    points: [
+      "Clients swipe through trainers, chat with them live and book sessions.",
+      "Google Maps shows the trainers nearby.",
+    ],
+    links: [
+      { label: "App Store", href: "https://apps.apple.com/app/id6759800744" },
       {
         label: "Google Play",
         href: "https://play.google.com/store/apps/details?id=com.mumba.trainio",
@@ -35,70 +54,55 @@ const shipped = [
     ],
   },
   {
-    index: "02",
+    index: "03",
     name: "PupMood",
-    kind: "Dog mood tracking",
+    kind: "Dog mood tracker",
     platform: "iOS",
-    role: "Sole developer",
-    dates: "Jun 2026",
-    points: [
-      "Logs and analyses a dog's mood over time, with multi-dog support, streak tracking, time-of-day mood bucketing, and animated UI with haptic and audio feedback.",
-      "Supabase for data sync and auth with Google and Apple Sign-In, a route-guarded onboarding flow, and RevenueCat entitlements gating multi-dog support, mood trends and AI features.",
-      "AI-powered mood summaries that turn logged entries into natural-language insights, plus push notifications and reminders.",
-      "Full release pipeline: EAS Build, App Store submission, and a marketing landing page with legal and support pages.",
-    ],
-    tech: "React Native · Expo · TypeScript · Supabase · RevenueCat · EAS Build",
-    // No country segment: apps.apple.com redirects to the visitor's own
-    // storefront. A /my/ link pins it to Malaysia and can show a region
-    // error to someone reading this from anywhere else.
+    dates: "2026",
+    points: ["Log your dog's mood, keep a streak going, and get AI summaries and reminders."],
     links: [
       {
         label: "App Store",
-        href: "https://apps.apple.com/app/pupmood-dog-mood-tracker/id6776720786",
+        href: "https://apps.apple.com/us/app/pupmood-dog-mood-tracker/id6776720786",
       },
     ],
   },
   {
-    index: "03",
+    index: "04",
     name: "FlightPulse",
-    kind: "Flight delay insights for Malaysian airports",
+    kind: "Live flight tracking",
     platform: "Web",
-    role: "Personal project",
-    dates: "Sep 2026 — Present",
+    dates: "2026",
     points: [
-      "Medallion pipeline (bronze to silver to gold) on Databricks and Delta Lake in PySpark and Spark SQL, with history kept incremental by Delta MERGE upserts.",
-      "Two scheduled ingestion jobs: OpenSky aircraft positions every 30 minutes at roughly 12,000 aircraft per snapshot, and Aviationstack landed departures from KUL and PEN daily.",
-      "Gold insight tables modelled in Spark SQL with CTEs and window functions for punctuality by airline, hour, route and day, enforcing minimum sample sizes before ranking.",
-      "Gold tables served through a FastAPI service on AWS EC2 behind nginx, with connection pooling, result caching and rate limiting, deployed on every push by GitHub Actions.",
+      "Shows about 12,000 planes live on a 3D globe, with the weather at each airport.",
+      "A Databricks and PySpark pipeline refreshes the data every 30 minutes.",
+      "A FastAPI service on AWS serves it to an Angular front end.",
     ],
-    tech: "Databricks · PySpark · Spark SQL · Delta Lake · Python · FastAPI · AWS EC2 · nginx · GitHub Actions · Angular · TypeScript",
+    tech: "Databricks · PySpark · Python · FastAPI · AWS · Angular",
     links: [
       { label: "Live site", href: "https://flightpulse-frontend.vercel.app" },
-      { label: "Pipeline", href: "https://github.com/MUMBA-Amos/flightpulse-pipeline" },
-      { label: "API", href: "https://github.com/MUMBA-Amos/flightpulse-api" },
-      { label: "Frontend", href: "https://github.com/MUMBA-Amos/flightpulse-frontend" },
+      { label: "Pipeline code", href: "https://github.com/MUMBA-Amos/flightpulse-pipeline" },
+      { label: "API code", href: "https://github.com/MUMBA-Amos/flightpulse-api" },
+      { label: "Front end code", href: "https://github.com/MUMBA-Amos/flightpulse-frontend" },
     ],
   },
 ];
 
 const builds = [
   {
-    index: "04",
-    name: "Bird species classification",
-    note: "Deep learning on the CUB-200 dataset",
-    tech: "Python · TensorFlow",
-  },
-  {
     index: "05",
-    name: "E-commerce categorisation",
-    note: "NLP classifier for product taxonomies",
-    tech: "Python · NLP",
+    name: "Fall detection",
+    note: "A CNN that spots when someone falls",
   },
   {
     index: "06",
-    name: "KPI management system",
-    note: "Tracking and analysing performance metrics",
-    tech: "Web · SQL",
+    name: "Fake face detection",
+    note: "A computer vision model that tells real faces from fake ones",
+  },
+  {
+    index: "07",
+    name: "Football fan sentiment",
+    note: "An LSTM model that reads how fans feel",
   },
 ];
 
@@ -139,9 +143,9 @@ const Projects = () => {
         </header>
 
         <p className="work__lede">
-          Two apps are live in the stores and one platform is live on the web;
-          the rest are the builds behind them.
-          Client platforms are under Experience.
+          Three apps are live on the App Store and Google Play, and one is live
+          on the web. Below them are my university AI projects, built with Keras,
+          TensorFlow and scikit-learn.
         </p>
 
         <div className="work__group">
@@ -152,7 +156,9 @@ const Projects = () => {
               <div className="work-card__meta">
                 <span className="work-card__index">{app.index}</span>
                 <span className="work-card__platform">{app.platform}</span>
-                <span className="work-card__role">{app.role}</span>
+                {app.role && (
+                  <span className="work-card__role">{app.role}</span>
+                )}
                 <span className="work-card__role">{app.dates}</span>
               </div>
 
@@ -166,7 +172,7 @@ const Projects = () => {
                   ))}
                 </ul>
 
-                <p className="work-card__tech">{app.tech}</p>
+                {app.tech && <p className="work-card__tech">{app.tech}</p>}
 
                 <p className="work-card__links">
                   {app.links.map(({ label, href }) => (
@@ -187,14 +193,15 @@ const Projects = () => {
         </div>
 
         <div className="work__group">
-          <h3 className="work__label">Other builds</h3>
+          <h3 className="work__label">
+            University AI projects, 2023 to 2024
+          </h3>
 
           {builds.map((build) => (
             <article className="work-row" key={build.name}>
               <span className="work-row__index">{build.index}</span>
               <h4 className="work-row__name">{build.name}</h4>
               <p className="work-row__note">{build.note}</p>
-              <span className="work-row__tech">{build.tech}</span>
             </article>
           ))}
         </div>
